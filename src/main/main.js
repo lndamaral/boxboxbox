@@ -14,13 +14,13 @@ app.whenReady().then(() => {
   telemetry = new TelemetryBridge();
 
   manager.createControlWindow();
-  manager.createOverlay('relative', { width: 420, height: 250 });
-  manager.createOverlay('inputs', { width: 360, height: 140 });
-  manager.createOverlay('fuel', { width: 280, height: 180 });
-  manager.createOverlay('tires', { width: 280, height: 160 });
-  manager.createOverlay('trackmap', { width: 360, height: 260, hidden: true });
-  manager.createOverlay('standings', { width: 460, height: 380 });
-  manager.createOverlay('spotter', { width: 220, height: 240 });
+  manager.createOverlay('relative', { width: 420, height: 250, x: 2, y: 614 });
+  manager.createOverlay('inputs', { width: 360, height: 140, x: 424, y: 721 });
+  manager.createOverlay('fuel', { width: 280, height: 180, x: 1163, y: 378 });
+  manager.createOverlay('tires', { width: 352, height: 245, x: 1099, y: 551 });
+  manager.createOverlay('trackmap', { width: 360, height: 260, x: 1085, y: 86, hidden: true });
+  manager.createOverlay('standings', { width: 452, height: 289, x: 1, y: 33 });
+  manager.createOverlay('spotter', { width: 220, height: 240, x: 632, y: 114 });
 
   tireCal = new TireCalibrationManager();
   trackMap = new TrackMapManager();

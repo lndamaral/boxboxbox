@@ -47,42 +47,42 @@
   }
 
   function getColumns(mode, multiclass) {
-    const cls = multiclass ? [{ key: 'cls', label: 'CLS', width: '32px' }] : [];
+    const cls = multiclass ? [{ key: 'cls', label: 'CLS', width: '30px' }] : [];
     if (mode === 'race') {
       return [
-        { key: 'pos', label: 'POS', width: '28px' },
+        { key: 'pos', label: 'P', width: '22px' },
         ...cls,
-        { key: 'car', label: 'CAR', width: '36px' },
+        { key: 'car', label: 'CAR', width: '32px' },
         { key: 'name', label: 'DRIVER', width: '1fr' },
-        { key: 'ir', label: 'iR', width: '48px' },
-        { key: 'gapLeader', label: 'GAP', width: '64px' },
-        { key: 'gapAhead', label: 'INT', width: '64px' },
-        { key: 'last', label: 'LAST', width: '64px' },
-        { key: 'best', label: 'BEST', width: '64px' },
+        { key: 'ir', label: 'iR', width: '36px' },
+        { key: 'gapLeader', label: 'GAP', width: '52px' },
+        { key: 'gapAhead', label: 'INT', width: '48px' },
+        { key: 'last', label: 'LAST', width: '56px' },
+        { key: 'best', label: 'BEST', width: '56px' },
       ];
     } else if (mode === 'qualy') {
       return [
-        { key: 'pos', label: 'POS', width: '28px' },
+        { key: 'pos', label: 'P', width: '22px' },
         ...cls,
-        { key: 'car', label: 'CAR', width: '36px' },
+        { key: 'car', label: 'CAR', width: '32px' },
         { key: 'name', label: 'DRIVER', width: '1fr' },
-        { key: 'ir', label: 'iR', width: '48px' },
-        { key: 'best', label: 'BEST', width: '70px' },
-        { key: 'deltaP1', label: '\u0394P1', width: '64px' },
-        { key: 'last', label: 'LAST', width: '64px' },
-        { key: 'status', label: 'STATUS', width: '60px' },
+        { key: 'ir', label: 'iR', width: '36px' },
+        { key: 'best', label: 'BEST', width: '58px' },
+        { key: 'deltaP1', label: '\u0394P1', width: '52px' },
+        { key: 'last', label: 'LAST', width: '56px' },
+        { key: 'status', label: 'ST', width: '44px' },
       ];
     } else {
       return [
-        { key: 'pos', label: 'POS', width: '28px' },
+        { key: 'pos', label: 'P', width: '22px' },
         ...cls,
-        { key: 'car', label: 'CAR', width: '36px' },
+        { key: 'car', label: 'CAR', width: '32px' },
         { key: 'name', label: 'DRIVER', width: '1fr' },
-        { key: 'ir', label: 'iR', width: '48px' },
-        { key: 'best', label: 'BEST', width: '70px' },
-        { key: 'deltaP1', label: '\u0394P1', width: '64px' },
-        { key: 'last', label: 'LAST', width: '64px' },
-        { key: 'laps', label: 'LAPS', width: '56px' },
+        { key: 'ir', label: 'iR', width: '36px' },
+        { key: 'best', label: 'BEST', width: '58px' },
+        { key: 'deltaP1', label: '\u0394P1', width: '52px' },
+        { key: 'last', label: 'LAST', width: '56px' },
+        { key: 'laps', label: 'L', width: '28px' },
       ];
     }
   }

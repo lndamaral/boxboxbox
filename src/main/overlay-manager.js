@@ -38,14 +38,21 @@ class OverlayManager {
   createOverlay(id, options = {}) {
     const defaults = { width: 420, height: 520 };
     const savedBounds = this.boundsStore.get(id);
-    const bounds = savedBounds || { width: options.width || defaults.width, height: options.height || defaults.height };
+    const bounds = savedBounds || {
+      width: options.width || defaults.width,
+      height: options.height || defaults.height,
+    };
 
     if (!savedBounds) {
-      const { width: screenW, height: screenH } = screen.getPrimaryDisplay().workAreaSize;
-      // Stack overlays with offset so they don't overlap on first run
-      const offset = this.overlays.size * 40;
-      bounds.x = Math.round(screenW - bounds.width - 40 - offset);
-      bounds.y = Math.round((screenH - bounds.height) / 2 + offset);
+      if (options.x != null && options.y != null) {
+        bounds.x = options.x;
+        bounds.y = options.y;
+      } else {
+        const { width: screenW, height: screenH } = screen.getPrimaryDisplay().workAreaSize;
+        const offset = this.overlays.size * 40;
+        bounds.x = Math.round(screenW - bounds.width - 40 - offset);
+        bounds.y = Math.round((screenH - bounds.height) / 2 + offset);
+      }
     }
 
     const win = new BrowserWindow({
