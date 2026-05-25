@@ -18,9 +18,10 @@ class TelemetryBridge extends EventEmitter {
   start() {
     try {
       const irsdk = require('node-irsdk-2023');
+      console.log('[Telemetry] node-irsdk-2023 loaded, waiting for iRacing...');
       this._startReal(irsdk);
-    } catch {
-      console.log('[Telemetry] node-irsdk-2023 not available, starting mock mode');
+    } catch (err) {
+      console.log('[Telemetry] node-irsdk-2023 not available, starting mock mode:', err.message);
       this.mock = true;
       this._startMock();
     }
@@ -39,11 +40,13 @@ class TelemetryBridge extends EventEmitter {
     const instance = irsdk.getInstance();
 
     instance.on('Connected', () => {
+      console.log('[Telemetry] connected to iRacing');
       this.connected = true;
       this.emit('connectionState', true);
     });
 
     instance.on('Disconnected', () => {
+      console.log('[Telemetry] disconnected from iRacing');
       this.connected = false;
       this.emit('connectionState', false);
     });
