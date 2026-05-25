@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "DEBUG=boxboxbox* electron .",
-    "test": "node --test test/*.test.js",
+    "test": "node --test test/pick-delta-mode.test.js test/fuel.test.js test/irating.test.js test/tire-calibration.test.js test/map-builder.test.js test/spotter.test.js",
     "build:win": "electron-builder --win",
     "release": "electron-builder --win --publish always"
   },
