@@ -197,8 +197,9 @@
       // Name
       name.textContent = e.name;
 
-      // iRating
-      ir.textContent = (e.iRating / 1000).toFixed(1) + 'k';
+      // iRating — show — for placeholder values (iRacing reports 1 in
+      // offline/test sessions and 0 when hidden; real iRatings are 50+).
+      ir.textContent = (e.iRating && e.iRating >= 50) ? (e.iRating / 1000).toFixed(1) + 'k' : '—';
 
       // SR / License badge
       const licLetter = e.license.charAt(0);

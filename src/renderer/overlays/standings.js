@@ -123,10 +123,19 @@
     return { cols, gridTemplate };
   }
 
+  // iRacing reports IRating = 1 in offline/test sessions and may report
+  // 0 when iRating is hidden. Real iRatings are 50+; treat below as invalid.
+  const MIN_VALID_IR = 50;
+
+  function formatIR(iR) {
+    if (!iR || iR < MIN_VALID_IR) return '—';
+    return (iR / 1000).toFixed(1) + 'k';
+  }
+
   function estimateIR(drivers, playerIdx, multiclass) {
     if (!drivers || drivers.length < 2) return 0;
     const player = drivers[playerIdx];
-    if (!player || !player.iRating) return 0;
+    if (!player || !player.iRating || player.iRating < MIN_VALID_IR) return 0;
 
     let field = drivers;
     if (multiclass && player.classId != null) {
@@ -351,7 +360,7 @@
       if (multiclass) row.children[colIdx++].textContent = e.classPosition + '/' + classTotals[e.classId];
       row.children[colIdx++].textContent = e.carNum;
       row.children[colIdx++].textContent = e.name;
-      row.children[colIdx++].textContent = (e.iRating / 1000).toFixed(1) + 'k';
+      row.children[colIdx++].textContent = formatIR(e.iRating);
       const bestEl = row.children[colIdx];
       bestEl.textContent = formatTime(e.bestLap);
       bestEl.className = 's-time' + (isFastest(e, fastestMap, multiclass) ? ' fastest' : '');
@@ -426,7 +435,7 @@
       if (multiclass) row.children[colIdx++].textContent = e.classPosition + '/' + classTotals[e.classId];
       row.children[colIdx++].textContent = e.carNum;
       row.children[colIdx++].textContent = e.name;
-      row.children[colIdx++].textContent = (e.iRating / 1000).toFixed(1) + 'k';
+      row.children[colIdx++].textContent = formatIR(e.iRating);
       const bestEl = row.children[colIdx];
       bestEl.textContent = formatTime(e.bestLap);
       bestEl.className = 's-time' + (isFastest(e, fastestMap, multiclass) ? ' fastest' : '');
