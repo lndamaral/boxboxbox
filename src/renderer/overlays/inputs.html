@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inputs</title>
+  <link rel="stylesheet" href="../styles/tokens.css">
+  <link rel="stylesheet" href="inputs.css">
+</head>
+<body>
+  <div class="inputs-card" id="card">
+    <div class="inp-hdr">
+      <span class="inp-hdr-title">INPUTS</span>
+      <span class="inp-hdr-meta" id="headerMeta"></span>
+    </div>
+    <div class="inputs-body">
+      <canvas id="traceCanvas" width="358" height="96"></canvas>
+      <div class="inp-steering">
+        <span class="inp-steering-label">STEER</span>
+        <div class="inp-steering-bar">
+          <div class="inp-steering-center"></div>
+          <div class="inp-steering-fill" id="steeringBar"></div>
+        </div>
+        <span class="inp-steering-deg" id="steerDeg">0°</span>
+      </div>
+    </div>
+  </div>
+  <script src="inputs.js"></script>
+</body>
+</html>

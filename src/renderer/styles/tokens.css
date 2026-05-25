@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* Surface */
+  --surface-bg:        rgba(8, 10, 16, 0.78);
+  --surface-elev:      rgba(255, 255, 255, 0.04);
+  --surface-elev-hi:   rgba(255, 255, 255, 0.08);
+  --surface-player:    rgba(0, 229, 255, 0.06);
+  --border:            rgba(255, 255, 255, 0.06);
+  --border-strong:     rgba(255, 255, 255, 0.14);
+
+  /* Text */
+  --text-primary:      rgba(255, 255, 255, 0.94);
+  --text-secondary:    rgba(255, 255, 255, 0.58);
+  --text-muted:        rgba(255, 255, 255, 0.34);
+
+  /* Accent */
+  --accent:            #00e5ff;
+  --accent-soft:       rgba(0, 229, 255, 0.16);
+  --accent-glow:       0 0 16px rgba(0, 229, 255, 0.35);
+
+  /* Semantic */
+  --pos-good:          #4ade80;
+  --pos-bad:           #f87171;
+  --pit-warn:          #fbbf24;
+  --lapped:            #60a5fa;
+  --pos-fastest:       #d946ef;
+
+  /* License */
+  --lic-pro: #f4a460;
+  --lic-a:   #1e88e5;
+  --lic-b:   #43a047;
+  --lic-c:   #fdd835;
+  --lic-d:   #fb8c00;
+  --lic-r:   #e53935;
+
+  /* Spacing */
+  --s-1: 2px;
+  --s-2: 4px;
+  --s-3: 6px;
+  --s-4: 8px;
+  --s-5: 12px;
+  --s-6: 16px;
+
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
+
+  /* Typography */
+  --font-display: 'Manrope', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Tabular nums for all mono text */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}

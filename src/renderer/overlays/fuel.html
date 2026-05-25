@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fuel</title>
+  <link rel="stylesheet" href="../styles/tokens.css">
+  <link rel="stylesheet" href="fuel.css">
+</head>
+<body>
+  <div class="fuel-card" id="card">
+    <div class="fuel-hdr">
+      <span class="fuel-hdr-title">FUEL</span>
+      <span class="rel-conn" id="connDot"></span>
+    </div>
+    <div class="fuel-main">
+      <div class="fuel-block">
+        <div class="fuel-block-label">Atual</div>
+        <div class="fuel-block-value"><span id="fuelLevel">--</span><span class="unit">L</span></div>
+      </div>
+      <div class="fuel-block">
+        <div class="fuel-block-label">Por volta</div>
+        <div class="fuel-block-value"><span id="fuelAvg">--</span><span class="unit">L</span></div>
+      </div>
+      <div class="fuel-block">
+        <div class="fuel-block-label">Voltas restam</div>
+        <div class="fuel-block-value"><span id="fuelLapsLeft">--</span></div>
+      </div>
+      <div class="fuel-block">
+        <div class="fuel-block-label">Alvo</div>
+        <div class="fuel-block-value"><span id="fuelTarget">--</span><span class="unit">L</span></div>
+      </div>
+    </div>
+    <div class="fuel-delta-bar">
+      <span class="fuel-delta-label">DELTA</span>
+      <span class="fuel-delta-value" id="fuelDelta">--</span>
+    </div>
+  </div>
+  <script src="fuel.js"></script>
+</body>
+</html>

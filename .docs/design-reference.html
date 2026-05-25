@@ -1,0 +1,2481 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>BoxBoxBox — Design Reference</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+  <style>
+    /* ===== TOKENS (mirror do PRD) ===== */
+    :root {
+      --surface-bg: rgba(8, 10, 16, 0.78);
+      --surface-bg-solid: rgb(8, 10, 16);
+      --surface-elev: rgba(255, 255, 255, 0.04);
+      --surface-elev-hi: rgba(255, 255, 255, 0.08);
+      --surface-player: rgba(0, 229, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.06);
+      --border-strong: rgba(255, 255, 255, 0.14);
+
+      --text-primary: rgba(255, 255, 255, 0.94);
+      --text-secondary: rgba(255, 255, 255, 0.58);
+      --text-muted: rgba(255, 255, 255, 0.34);
+
+      --accent: #00e5ff;
+      --accent-soft: rgba(0, 229, 255, 0.16);
+      --accent-glow: 0 0 16px rgba(0, 229, 255, 0.35);
+
+      --pos-good: #4ade80;
+      --pos-bad: #f87171;
+      --pit-warn: #fbbf24;
+      --lapped: #60a5fa;
+      --pos-fastest: #d946ef;  /* roxo neon — convenção motorsport pra fastest lap da sessão */
+
+      --lic-pro: #f4a460;
+      --lic-a: #1e88e5;
+      --lic-b: #43a047;
+      --lic-c: #fdd835;
+      --lic-d: #fb8c00;
+      --lic-r: #e53935;
+
+      --font-display: 'Manrope', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #050608;
+      color: #fff;
+      font-family: var(--font-display);
+      -webkit-font-smoothing: antialiased;
+      padding: 48px 32px 96px;
+      min-height: 100vh;
+    }
+
+    .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+    /* ===== PAGE LAYOUT ===== */
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    .page-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 32px;
+      margin-bottom: 48px;
+    }
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .page-header h1 .brand { color: var(--accent); }
+    .page-header p {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 720px;
+    }
+
+    .section {
+      margin-bottom: 80px;
+    }
+
+    .section-header {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .section-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .section-header .phase-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .section-header .dim {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .section-desc {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 720px;
+      margin-bottom: 32px;
+    }
+
+    .variants {
+      display: grid;
+      gap: 32px;
+    }
+    .variants.cols-1 { grid-template-columns: 1fr; }
+    .variants.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .variants.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+    @media (max-width: 1024px) {
+      .variants.cols-2, .variants.cols-3 { grid-template-columns: 1fr; }
+    }
+
+    .variant-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.55);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .variant-label .badge {
+      background: var(--surface-elev-hi);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .variant-label .badge.future { background: rgba(0, 229, 255, 0.15); color: var(--accent); }
+
+    .variant-sub {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    /* ===== MOCKUP STAGE (background simulating sim) ===== */
+    .stage {
+      background: #1a1d24;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(50, 30, 20, 0.4), transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(20, 30, 50, 0.4), transparent 50%);
+      border-radius: 10px;
+      padding: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 260px;
+    }
+
+    .stage-sm { min-height: 200px; padding: 20px; }
+    .stage-md { min-height: 280px; }
+    .stage-lg { min-height: 560px; }
+
+    /* ===== OVERLAY BASE ===== */
+    .overlay {
+      background: var(--surface-bg);
+      backdrop-filter: blur(18px) saturate(140%);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      color: var(--text-primary);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.05) inset,
+        0 0 0 1px rgba(0, 0, 0, 0.4),
+        0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ===== RELATIVE OVERLAY ===== */
+    .ovl-relative { width: 420px; }
+    .rel-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px; letter-spacing: 0.08em;
+    }
+    .rel-hdr-left { display: flex; gap: 6px; align-items: center; }
+    .rel-hdr-title { font-weight: 800; text-transform: uppercase; }
+    .rel-hdr-sep { color: var(--text-muted); }
+    .rel-hdr-track, .rel-hdr-session {
+      color: var(--text-secondary); font-weight: 600; text-transform: uppercase;
+    }
+    .rel-hdr-session { color: var(--text-muted); }
+    .rel-hdr-right { display: flex; align-items: center; gap: 8px; }
+    .rel-conn {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--pos-good);
+      box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2), 0 0 10px rgba(74, 222, 128, 0.4);
+    }
+
+    .rel-cols, .rel-row {
+      display: grid;
+      grid-template-columns: 28px 38px 1fr 48px 44px 64px 56px;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+    }
+    .rel-cols-mc, .rel-row-mc {
+      display: grid;
+      grid-template-columns: 24px 32px 38px 1fr 44px 64px 56px;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+    }
+    .rel-cols, .rel-cols-mc {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .rel-cols .right, .rel-cols-mc .right { text-align: right; }
+    .rel-cols .center, .rel-cols-mc .center { text-align: center; }
+
+    .rel-row, .rel-row-mc {
+      position: relative;
+      font-size: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .rel-row::before, .rel-row-mc::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--class-color, transparent);
+    }
+    .rel-row.player, .rel-row-mc.player {
+      background: var(--surface-player);
+    }
+    .rel-row.player::before, .rel-row-mc.player::before {
+      background: var(--accent);
+      box-shadow: var(--accent-glow);
+    }
+    .rel-row.player .rel-pos, .rel-row-mc.player .rel-pos {
+      color: var(--accent); font-weight: 800;
+    }
+    .rel-row.pit, .rel-row-mc.pit { opacity: 0.6; }
+
+    .rel-pos {
+      font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+      font-weight: 700; color: var(--text-secondary); text-align: center;
+    }
+    .rel-cls {
+      font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+      font-weight: 600; font-size: 10px; color: var(--text-secondary); text-align: center;
+    }
+    .rel-car {
+      font-family: var(--font-mono); font-weight: 700;
+      background: var(--surface-elev-hi); padding: 2px 6px;
+      border-radius: 4px; text-align: center; font-size: 11px;
+    }
+    .rel-car .pit-chip {
+      display: inline-block; margin-left: 4px; padding: 0 4px;
+      background: var(--pit-warn); color: #000;
+      font-size: 9px; font-weight: 800; border-radius: 3px; vertical-align: middle;
+    }
+    .rel-name {
+      font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .rel-ir {
+      font-family: var(--font-mono); font-weight: 500; font-size: 11px;
+      color: var(--text-secondary); text-align: right;
+    }
+    .rel-lic {
+      font-family: var(--font-mono); font-weight: 700; font-size: 10px;
+      text-align: center; padding: 1px 0; border-radius: 4px; color: #fff;
+      background: var(--lic-color, #555);
+    }
+    .rel-last {
+      font-family: var(--font-mono); font-weight: 500; font-size: 11px;
+      text-align: right; color: var(--text-secondary);
+    }
+    .rel-delta {
+      font-family: var(--font-mono); font-weight: 600; font-size: 11px;
+      text-align: right;
+    }
+    .rel-delta.bad { color: var(--pos-bad); }
+    .rel-delta.good { color: var(--pos-good); }
+    .rel-delta.neutral { color: rgba(255, 255, 255, 0.5); font-size: 13px; }
+    .rel-status {
+      font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+      text-align: right; letter-spacing: 0.05em;
+    }
+    .rel-status.flying { color: var(--accent); }
+    .rel-status.out { color: var(--pit-warn); }
+    .rel-status.in { color: var(--text-muted); }
+
+    .rel-ftr {
+      padding: 6px 12px;
+      border-top: 1px solid var(--border);
+      font-size: 9px; letter-spacing: 0.1em;
+      color: var(--text-muted); text-transform: uppercase;
+      font-weight: 600;
+      display: flex; justify-content: flex-end;
+    }
+
+    .rel-group-hdr {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+    .rel-group-hdr .gh-stripe {
+      width: 3px; height: 11px; background: var(--class-color);
+      border-radius: 1px;
+    }
+    .rel-group-hdr .gh-name { color: var(--class-color); font-weight: 800; }
+    .rel-group-hdr .gh-meta { color: var(--text-muted); font-weight: 500; letter-spacing: 0.05em; }
+    .rel-group-hdr .gh-your {
+      margin-left: auto; color: var(--accent);
+      background: var(--accent-soft); padding: 1px 6px;
+      border-radius: 3px; font-size: 8px; letter-spacing: 0.1em;
+    }
+
+    /* ===== INPUTS TRACE OVERLAY ===== */
+    .ovl-inputs { width: 360px; }
+    .inp-hdr {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      font-size: 10px; letter-spacing: 0.08em;
+    }
+    .inp-hdr-title { font-weight: 800; text-transform: uppercase; }
+    .inp-hdr-meta { font-family: var(--font-mono); color: var(--text-muted); font-size: 11px; }
+
+    .inp-canvas {
+      height: 80px;
+      position: relative;
+      background: rgba(0, 0, 0, 0.2);
+      margin: 0 12px;
+      margin-top: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .inp-legend {
+      display: flex; gap: 12px; padding: 6px 12px;
+      font-size: 9px; letter-spacing: 0.08em; color: var(--text-muted);
+      font-weight: 600; text-transform: uppercase;
+    }
+    .inp-legend-item { display: flex; align-items: center; gap: 4px; }
+    .inp-legend-dot { width: 8px; height: 2px; border-radius: 1px; }
+
+    .inp-steering {
+      padding: 8px 12px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .inp-steering-label {
+      font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted); font-weight: 700;
+      min-width: 50px;
+    }
+    .inp-steering-bar {
+      flex: 1; height: 6px; background: var(--surface-elev);
+      border-radius: 3px; position: relative;
+    }
+    .inp-steering-center {
+      position: absolute; left: 50%; top: -2px; bottom: -2px;
+      width: 1px; background: rgba(255, 255, 255, 0.2);
+    }
+    .inp-steering-fill {
+      position: absolute; top: 0; bottom: 0;
+      background: var(--accent); border-radius: 3px;
+    }
+    .inp-steering-deg {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+      color: var(--text-secondary); min-width: 40px; text-align: right;
+    }
+
+    /* ===== FUEL OVERLAY ===== */
+    .ovl-fuel { width: 280px; }
+    .fuel-hdr {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      font-size: 10px; letter-spacing: 0.08em;
+    }
+    .fuel-hdr-title { font-weight: 800; text-transform: uppercase; }
+
+    .fuel-main {
+      padding: 16px 12px 12px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .fuel-block { }
+    .fuel-block-label {
+      font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted); font-weight: 700; margin-bottom: 4px;
+    }
+    .fuel-block-value {
+      font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+      font-size: 22px; font-weight: 700; line-height: 1;
+    }
+    .fuel-block-value .unit {
+      font-size: 11px; color: var(--text-muted); font-weight: 500; margin-left: 2px;
+    }
+    .fuel-block-value.alert { color: var(--pos-bad); }
+    .fuel-block-value.warn { color: var(--pit-warn); }
+    .fuel-block-value.good { color: var(--pos-good); }
+
+    .fuel-target {
+      padding: 8px 12px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-elev);
+      display: flex; justify-content: space-between; align-items: baseline;
+    }
+    .fuel-target-label {
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-secondary); font-weight: 700;
+    }
+    .fuel-target-delta {
+      font-family: var(--font-mono); font-weight: 700; font-size: 14px;
+    }
+    .fuel-target-delta.good { color: var(--pos-good); }
+    .fuel-target-delta.warn { color: var(--pit-warn); }
+    .fuel-target-delta.bad { color: var(--pos-bad); }
+
+    /* ===== TIRES OVERLAY ===== */
+    .ovl-tires { width: 280px; }
+    .tires-hdr {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      font-size: 10px; letter-spacing: 0.08em;
+    }
+    .tires-hdr-title { font-weight: 800; text-transform: uppercase; }
+    .tires-hdr-meta { font-family: var(--font-mono); color: var(--text-muted); font-size: 10px; }
+
+    .tires-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border);
+    }
+    .tire {
+      background: rgba(8, 10, 16, 0.5);
+      padding: 10px 12px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .tire-label {
+      font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted); font-weight: 700;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .tire-lap-badge {
+      font-family: var(--font-mono); font-size: 9px; font-weight: 600;
+      color: var(--text-muted); background: var(--surface-elev-hi);
+      padding: 1px 4px; border-radius: 2px; letter-spacing: 0;
+    }
+    .tire-pressure {
+      font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+      font-size: 20px; font-weight: 700; line-height: 1;
+    }
+    .tire-pressure .unit {
+      font-size: 10px; color: var(--text-muted); font-weight: 500; margin-left: 2px;
+    }
+    .tire-pressure.cold { color: var(--lapped); }
+    .tire-pressure.ideal { color: var(--text-primary); }
+    .tire-pressure.high { color: var(--pit-warn); }
+    .tire-pressure.crit { color: var(--pos-bad); }
+
+    .tire-temps {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .tire-temp-labels {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 0.05em;
+      margin-top: -2px;
+    }
+    .tire-temp-cell {
+      padding: 4px 0; text-align: center;
+      font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+      font-size: 10px; font-weight: 600; color: #fff;
+    }
+    .tt-cold { background: #1e88e5; }
+    .tt-cool { background: #4ade80aa; color: #052e16; }
+    .tt-ideal { background: #4ade80; color: #052e16; }
+    .tt-warm { background: #fbbf24; color: #422006; }
+    .tt-hot { background: #fb8c00; color: #422006; }
+    .tt-crit { background: #e53935; }
+
+    /* ===== TRACK MAP OVERLAY ===== */
+    .ovl-trackmap { width: 360px; }
+    .tm-hdr {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      font-size: 10px; letter-spacing: 0.08em;
+    }
+    .tm-hdr-title { font-weight: 800; text-transform: uppercase; }
+    .tm-hdr-meta { font-family: var(--font-mono); color: var(--text-muted); font-size: 11px; }
+
+    .tm-svg-wrap {
+      padding: 16px 20px;
+    }
+    .tm-svg {
+      width: 100%; height: 200px;
+    }
+
+    .tm-ftr {
+      padding: 6px 12px;
+      border-top: 1px solid var(--border);
+      font-size: 9px; letter-spacing: 0.1em;
+      color: var(--text-muted); text-transform: uppercase; font-weight: 600;
+      display: flex; justify-content: space-between;
+    }
+    .tm-pos-leader {
+      color: var(--accent); font-family: var(--font-mono);
+      font-size: 11px; font-weight: 700; letter-spacing: 0;
+    }
+
+    /* ===== STANDINGS OVERLAY ===== */
+    .ovl-standings { width: 480px; }
+    .std-hdr {
+      display: flex; justify-content: space-between; align-items: stretch;
+      padding: 10px 14px; border-bottom: 1px solid var(--border);
+    }
+    .std-hdr-left { display: flex; flex-direction: column; gap: 4px; }
+    .std-hdr-line {
+      display: flex; gap: 8px; align-items: center;
+      font-size: 10px; letter-spacing: 0.08em;
+    }
+    .std-hdr-title { font-weight: 800; text-transform: uppercase; }
+    .std-hdr-track { color: var(--text-secondary); font-weight: 600; text-transform: uppercase; }
+    .std-hdr-session {
+      font-family: var(--font-mono); color: var(--text-muted);
+      font-size: 11px; font-weight: 600;
+    }
+    .std-ir-est {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+      padding-left: 14px; border-left: 1px solid var(--border);
+    }
+    .std-ir-value {
+      font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+      font-size: 22px; font-weight: 700; line-height: 1;
+    }
+    .std-ir-value.good { color: var(--pos-good); }
+    .std-ir-value.bad { color: var(--pos-bad); }
+    .std-ir-value.zero { color: var(--text-muted); }
+    .std-ir-label {
+      font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted); font-weight: 700;
+    }
+
+    .std-cols {
+      display: grid;
+      gap: 6px;
+      padding: 6px 14px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .std-row {
+      display: grid;
+      gap: 6px;
+      padding: 7px 14px;
+      align-items: center;
+      position: relative;
+      font-size: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .std-row.player {
+      background: var(--surface-player);
+    }
+    .std-row.player::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--accent);
+      box-shadow: var(--accent-glow);
+    }
+    .std-row.player .std-pos { color: var(--accent); font-weight: 800; }
+
+    .std-cols.race, .std-row.race { grid-template-columns: 28px 36px 1fr 48px 64px 64px 64px 64px; }
+    .std-cols.qualy, .std-row.qualy { grid-template-columns: 28px 36px 1fr 48px 70px 64px 64px 60px; }
+    .std-cols.prac, .std-row.prac { grid-template-columns: 28px 36px 1fr 48px 70px 64px 64px 56px; }
+    .std-cols.mc-race, .std-row.mc-race { grid-template-columns: 24px 32px 36px 1fr 48px 62px 70px 64px; }
+
+    .std-row::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--class-color, transparent); }
+    .std-row.lapped { opacity: 0.7; }
+
+    .std-pos {
+      font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+      font-weight: 700; color: var(--text-secondary); text-align: center;
+    }
+    .std-cls {
+      font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+      font-weight: 600; font-size: 10px; color: var(--text-secondary); text-align: center;
+    }
+    .std-car {
+      font-family: var(--font-mono); font-weight: 700;
+      background: var(--surface-elev-hi); padding: 2px 6px;
+      border-radius: 4px; text-align: center; font-size: 11px;
+    }
+    .std-name {
+      font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .std-ir {
+      font-family: var(--font-mono); font-weight: 500; font-size: 11px;
+      color: var(--text-secondary); text-align: right;
+    }
+    .std-time {
+      font-family: var(--font-mono); font-weight: 500; font-size: 11px;
+      text-align: right; color: var(--text-secondary);
+    }
+    .std-time.bold { color: var(--text-primary); font-weight: 600; }
+    .std-time.fastest {
+      color: var(--pos-fastest);
+      font-weight: 700;
+      text-shadow: 0 0 8px rgba(217, 70, 239, 0.55);
+    }
+    .std-delta {
+      font-family: var(--font-mono); font-weight: 600; font-size: 11px;
+      text-align: right;
+    }
+    .std-delta.bad { color: var(--pos-bad); }
+    .std-delta.good { color: var(--pos-good); }
+    .std-delta.neutral { color: rgba(255, 255, 255, 0.5); }
+    .std-delta.lap-down { color: var(--lapped); }
+    .std-status {
+      font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+      letter-spacing: 0.05em; text-align: right;
+    }
+    .std-status.flying { color: var(--accent); }
+    .std-status.out { color: var(--pit-warn); }
+    .std-status.in { color: var(--text-muted); }
+
+    /* ===== NOTES ===== */
+    .footer-notes {
+      margin-top: 64px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .footer-notes h3 {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    .footer-notes code {
+      font-family: var(--font-mono); font-size: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 1px 5px; border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ===== PAGE HEADER ===== -->
+    <header class="page-header">
+      <h1><span class="brand">BoxBoxBox</span> — Design Reference</h1>
+      <p>
+        Mockups visuais de todos os overlays do PRD, com variações por modo de sessão
+        e cenários de uso. Use como referência durante implementação. As medidas,
+        cores e tipografia aqui batem com os tokens em <code>tokens.css</code> e a spec do PRD.
+      </p>
+    </header>
+
+    <!-- ============================================== -->
+    <!-- ===== RELATIVE ============================== -->
+    <!-- ============================================== -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Relative</h2>
+        <span class="phase-tag">Fase 1</span>
+        <span class="dim">420 × 320 · 3 ahead + player + 3 behind</span>
+      </div>
+      <p class="section-desc">
+        Lista de carros próximos ao player. Player highlighted com stripe cyan e tint.
+        Coluna DELTA muda interpretação por session type. Stripe lateral colorido por classe.
+      </p>
+
+      <div class="variants cols-2">
+
+        <!-- RELATIVE: RACE MODE -->
+        <div>
+          <div class="variant-label">Modo Race <span class="badge">default</span></div>
+          <div class="variant-sub">Coluna DELTA = gap de tempo até carro próximo (positivo = à frente, negativo = atrás)</div>
+          <div class="stage">
+            <div class="overlay ovl-relative">
+              <div class="rel-hdr">
+                <div class="rel-hdr-left">
+                  <span class="rel-hdr-title">RELATIVE</span>
+                  <span class="rel-hdr-sep">·</span>
+                  <span class="rel-hdr-track">OKAYAMA</span>
+                </div>
+                <div class="rel-hdr-right">
+                  <span class="rel-hdr-session">RACE</span>
+                  <span class="rel-conn"></span>
+                </div>
+              </div>
+              <div class="rel-cols">
+                <span>P</span><span>CAR</span><span>DRIVER</span>
+                <span class="right num">iR</span><span class="center">SR</span>
+                <span class="right num">LAST</span><span class="right num">DELTA</span>
+              </div>
+              <ul style="list-style:none">
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">8</span><span class="rel-car">44</span><span class="rel-name">L. Hamilton</span>
+                  <span class="rel-ir">5.4k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.8</span>
+                  <span class="rel-last">1:27.123</span><span class="rel-delta bad">+2.310</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">9</span><span class="rel-car">16</span><span class="rel-name">C. Leclerc</span>
+                  <span class="rel-ir">7.8k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.7</span>
+                  <span class="rel-last">1:27.001</span><span class="rel-delta bad">+1.420</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">10</span><span class="rel-car">4</span><span class="rel-name">L. Norris</span>
+                  <span class="rel-ir">6.2k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.5</span>
+                  <span class="rel-last">1:27.890</span><span class="rel-delta bad">+0.430</span>
+                </li>
+                <li class="rel-row player" style="--class-color: #43a047">
+                  <span class="rel-pos">11</span><span class="rel-car">77</span><span class="rel-name">L. Amaral</span>
+                  <span class="rel-ir">2.1k</span><span class="rel-lic" style="--lic-color: var(--lic-b)">B3.2</span>
+                  <span class="rel-last">1:28.234</span><span class="rel-delta neutral">━</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">12</span><span class="rel-car">81</span><span class="rel-name">O. Piastri</span>
+                  <span class="rel-ir">5.9k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.2</span>
+                  <span class="rel-last">1:27.456</span><span class="rel-delta good">−0.210</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">13</span><span class="rel-car">63</span><span class="rel-name">G. Russell</span>
+                  <span class="rel-ir">6.7k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.3</span>
+                  <span class="rel-last">1:27.876</span><span class="rel-delta good">−0.880</span>
+                </li>
+                <li class="rel-row pit" style="--class-color: #fdd835">
+                  <span class="rel-pos">14</span><span class="rel-car">23<span class="pit-chip">P</span></span><span class="rel-name">S. Knight</span>
+                  <span class="rel-ir">1.8k</span><span class="rel-lic" style="--lic-color: var(--lic-c)">C2.8</span>
+                  <span class="rel-last">1:29.123</span><span class="rel-delta good">−2.450</span>
+                </li>
+              </ul>
+              <div class="rel-ftr">F9 EDIT · F10 HIDE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RELATIVE: QUALY MODE -->
+        <div>
+          <div class="variant-label">Modo Qualifying</div>
+          <div class="variant-sub">Coluna DELTA = delta de best lap vs player best. STATUS substitui pit chip pra mostrar OUT/FLYING/IN</div>
+          <div class="stage">
+            <div class="overlay ovl-relative">
+              <div class="rel-hdr">
+                <div class="rel-hdr-left">
+                  <span class="rel-hdr-title">RELATIVE</span>
+                  <span class="rel-hdr-sep">·</span>
+                  <span class="rel-hdr-track">OKAYAMA</span>
+                </div>
+                <div class="rel-hdr-right">
+                  <span class="rel-hdr-session">QUALY</span>
+                  <span class="rel-conn"></span>
+                </div>
+              </div>
+              <div class="rel-cols">
+                <span>P</span><span>CAR</span><span>DRIVER</span>
+                <span class="right num">iR</span><span class="center">SR</span>
+                <span class="right num">BEST</span><span class="right num">Δ BEST</span>
+              </div>
+              <ul style="list-style:none">
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">3</span><span class="rel-car">44</span><span class="rel-name">L. Hamilton</span>
+                  <span class="rel-ir">5.4k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.8</span>
+                  <span class="rel-last">1:26.401</span><span class="rel-delta bad">−1.220</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">4</span><span class="rel-car">16</span><span class="rel-name">C. Leclerc</span>
+                  <span class="rel-ir">7.8k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.7</span>
+                  <span class="rel-last">1:26.580</span><span class="rel-delta bad">−1.041</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">5</span><span class="rel-car">4</span><span class="rel-name">L. Norris</span>
+                  <span class="rel-ir">6.2k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.5</span>
+                  <span class="rel-last">1:27.090</span><span class="rel-delta bad">−0.531</span>
+                </li>
+                <li class="rel-row player" style="--class-color: #43a047">
+                  <span class="rel-pos">6</span><span class="rel-car">77</span><span class="rel-name">L. Amaral · FLYING</span>
+                  <span class="rel-ir">2.1k</span><span class="rel-lic" style="--lic-color: var(--lic-b)">B3.2</span>
+                  <span class="rel-last">1:27.621</span><span class="rel-delta neutral">━</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">7</span><span class="rel-car">81</span><span class="rel-name">O. Piastri</span>
+                  <span class="rel-ir">5.9k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.2</span>
+                  <span class="rel-last">1:27.840</span><span class="rel-delta good">+0.219</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">8</span><span class="rel-car">63</span><span class="rel-name">G. Russell · OUT LAP</span>
+                  <span class="rel-ir">6.7k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.3</span>
+                  <span class="rel-last">1:28.012</span><span class="rel-delta good">+0.391</span>
+                </li>
+                <li class="rel-row pit" style="--class-color: #fdd835">
+                  <span class="rel-pos">9</span><span class="rel-car">23<span class="pit-chip">P</span></span><span class="rel-name">S. Knight</span>
+                  <span class="rel-ir">1.8k</span><span class="rel-lic" style="--lic-color: var(--lic-c)">C2.8</span>
+                  <span class="rel-last">1:28.504</span><span class="rel-delta good">+0.883</span>
+                </li>
+              </ul>
+              <div class="rel-ftr">F9 EDIT · F10 HIDE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RELATIVE: MULTICLASS (v1.1 preview) - GROUPED BY CLASS -->
+        <div>
+          <div class="variant-label">
+            Multiclass <span class="badge future">v1.1 preview</span>
+          </div>
+          <div class="variant-sub">Agrupado por classe. Cada classe tem seu header. Sua classe (GTD) recebe mais espaço de carros próximos; outras classes mostram apenas os 2 mais próximos a você em delta</div>
+          <div class="stage">
+            <div class="overlay ovl-relative" style="width:460px">
+              <div class="rel-hdr">
+                <div class="rel-hdr-left">
+                  <span class="rel-hdr-title">RELATIVE</span>
+                  <span class="rel-hdr-sep">·</span>
+                  <span class="rel-hdr-track">SEBRING</span>
+                </div>
+                <div class="rel-hdr-right">
+                  <span class="rel-hdr-session">RACE · 3 CLASSES</span>
+                  <span class="rel-conn"></span>
+                </div>
+              </div>
+              <div class="rel-cols-mc">
+                <span>CLS</span><span>P</span><span>CAR</span><span>DRIVER</span>
+                <span class="center">SR</span>
+                <span class="right num">LAST</span><span class="right num">DELTA</span>
+              </div>
+
+              <!-- LMDh group -->
+              <div class="rel-group-hdr" style="--class-color: #e53935">
+                <span class="gh-stripe"></span>
+                <span class="gh-name">LMDh</span>
+                <span class="gh-meta">8 cars</span>
+              </div>
+              <ul style="list-style:none">
+                <li class="rel-row-mc" style="--class-color: #e53935">
+                  <span class="rel-cls">2/8</span><span class="rel-pos">4</span><span class="rel-car">7</span><span class="rel-name">A. Lynn</span>
+                  <span class="rel-lic" style="--lic-color: var(--lic-a)">A4.9</span>
+                  <span class="rel-last">1:48.231</span><span class="rel-delta bad">+3.421</span>
+                </li>
+                <li class="rel-row-mc" style="--class-color: #e53935">
+                  <span class="rel-cls">5/8</span><span class="rel-pos">11</span><span class="rel-car">31</span><span class="rel-name">P. Derani</span>
+                  <span class="rel-lic" style="--lic-color: var(--lic-a)">A4.6</span>
+                  <span class="rel-last">1:48.612</span><span class="rel-delta good">−1.220</span>
+                </li>
+              </ul>
+
+              <!-- LMP2 group -->
+              <div class="rel-group-hdr" style="--class-color: #1e88e5">
+                <span class="gh-stripe"></span>
+                <span class="gh-name">LMP2</span>
+                <span class="gh-meta">12 cars</span>
+              </div>
+              <ul style="list-style:none">
+                <li class="rel-row-mc" style="--class-color: #1e88e5">
+                  <span class="rel-cls">1/12</span><span class="rel-pos">9</span><span class="rel-car">31</span><span class="rel-name">M. Goosens</span>
+                  <span class="rel-lic" style="--lic-color: var(--lic-a)">A4.5</span>
+                  <span class="rel-last">1:52.890</span><span class="rel-delta bad">+1.108</span>
+                </li>
+                <li class="rel-row-mc" style="--class-color: #1e88e5">
+                  <span class="rel-cls">4/12</span><span class="rel-pos">14</span><span class="rel-car">8</span><span class="rel-name">J. Robin</span>
+                  <span class="rel-lic" style="--lic-color: var(--lic-a)">A4.3</span>
+                  <span class="rel-last">1:53.412</span><span class="rel-delta good">−2.041</span>
+                </li>
+              </ul>
+
+              <!-- GTD group (player's class) -->
+              <div class="rel-group-hdr" style="--class-color: #43a047">
+                <span class="gh-stripe"></span>
+                <span class="gh-name">GTD</span>
+                <span class="gh-meta">16 cars</span>
+                <span class="gh-your">YOUR CLASS</span>
+              </div>
+              <ul style="list-style:none">
+                <li class="rel-row-mc" style="--class-color: #43a047">
+                  <span class="rel-cls">2/16</span><span class="rel-pos">16</span><span class="rel-car">9</span><span class="rel-name">M. Ineichen</span>
+                  <span class="rel-lic" style="--lic-color: var(--lic-a)">A4.1</span>
+                  <span class="rel-last">2:01.012</span><span class="rel-delta bad">+1.420</span>
+                </li>
+                <li class="rel-row-mc" style="--class-color: #43a047">
+                  <span class="rel-cls">3/16</span><span class="rel-pos">17</span><span class="rel-car">93</span><span class="rel-name">P. Pilet</span>
+                  <span class="rel-lic" style="--lic-color: var(--lic-a)">A4.4</span>
+                  <span class="rel-last">2:01.422</span><span class="rel-delta bad">+0.512</span>
+                </li>
+                <li class="rel-row-mc player" style="--class-color: #43a047">
+                  <span class="rel-cls">4/16</span><span class="rel-pos">18</span><span class="rel-car">77</span><span class="rel-name">L. Amaral</span>
+                  <span class="rel-lic" style="--lic-color: var(--lic-b)">B3.2</span>
+                  <span class="rel-last">2:01.834</span><span class="rel-delta neutral">━</span>
+                </li>
+                <li class="rel-row-mc" style="--class-color: #43a047">
+                  <span class="rel-cls">5/16</span><span class="rel-pos">19</span><span class="rel-car">12</span><span class="rel-name">R. Hardwick</span>
+                  <span class="rel-lic" style="--lic-color: var(--lic-a)">A4.0</span>
+                  <span class="rel-last">2:01.901</span><span class="rel-delta good">−0.388</span>
+                </li>
+                <li class="rel-row-mc" style="--class-color: #43a047">
+                  <span class="rel-cls">6/16</span><span class="rel-pos">20</span><span class="rel-car">57</span><span class="rel-name">P. Long</span>
+                  <span class="rel-lic" style="--lic-color: var(--lic-a)">A3.8</span>
+                  <span class="rel-last">2:02.108</span><span class="rel-delta good">−1.012</span>
+                </li>
+              </ul>
+
+              <div class="rel-ftr">F9 EDIT · F10 HIDE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RELATIVE: PRACTICE MODE -->
+        <div>
+          <div class="variant-label">Modo Practice</div>
+          <div class="variant-sub">Mesmo layout do Qualy mas com header "PRACTICE". Útil pra pegar referência de pace antes da quali</div>
+          <div class="stage">
+            <div class="overlay ovl-relative">
+              <div class="rel-hdr">
+                <div class="rel-hdr-left">
+                  <span class="rel-hdr-title">RELATIVE</span>
+                  <span class="rel-hdr-sep">·</span>
+                  <span class="rel-hdr-track">OKAYAMA</span>
+                </div>
+                <div class="rel-hdr-right">
+                  <span class="rel-hdr-session">PRACTICE</span>
+                  <span class="rel-conn"></span>
+                </div>
+              </div>
+              <div class="rel-cols">
+                <span>P</span><span>CAR</span><span>DRIVER</span>
+                <span class="right num">iR</span><span class="center">SR</span>
+                <span class="right num">BEST</span><span class="right num">Δ BEST</span>
+              </div>
+              <ul style="list-style:none">
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">2</span><span class="rel-car">16</span><span class="rel-name">C. Leclerc</span>
+                  <span class="rel-ir">7.8k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.7</span>
+                  <span class="rel-last">1:26.890</span><span class="rel-delta bad">−0.892</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">3</span><span class="rel-car">44</span><span class="rel-name">L. Hamilton</span>
+                  <span class="rel-ir">5.4k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.8</span>
+                  <span class="rel-last">1:27.012</span><span class="rel-delta bad">−0.770</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">4</span><span class="rel-car">4</span><span class="rel-name">L. Norris</span>
+                  <span class="rel-ir">6.2k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.5</span>
+                  <span class="rel-last">1:27.421</span><span class="rel-delta bad">−0.361</span>
+                </li>
+                <li class="rel-row player" style="--class-color: #43a047">
+                  <span class="rel-pos">5</span><span class="rel-car">77</span><span class="rel-name">L. Amaral</span>
+                  <span class="rel-ir">2.1k</span><span class="rel-lic" style="--lic-color: var(--lic-b)">B3.2</span>
+                  <span class="rel-last">1:27.782</span><span class="rel-delta neutral">━</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">6</span><span class="rel-car">81</span><span class="rel-name">O. Piastri</span>
+                  <span class="rel-ir">5.9k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.2</span>
+                  <span class="rel-last">1:27.998</span><span class="rel-delta good">+0.216</span>
+                </li>
+                <li class="rel-row" style="--class-color: #43a047">
+                  <span class="rel-pos">7</span><span class="rel-car">63</span><span class="rel-name">G. Russell</span>
+                  <span class="rel-ir">6.7k</span><span class="rel-lic" style="--lic-color: var(--lic-a)">A4.3</span>
+                  <span class="rel-last">1:28.121</span><span class="rel-delta good">+0.339</span>
+                </li>
+                <li class="rel-row" style="--class-color: #fdd835">
+                  <span class="rel-pos">8</span><span class="rel-car">23</span><span class="rel-name">S. Knight</span>
+                  <span class="rel-ir">1.8k</span><span class="rel-lic" style="--lic-color: var(--lic-c)">C2.8</span>
+                  <span class="rel-last">1:28.890</span><span class="rel-delta good">+1.108</span>
+                </li>
+              </ul>
+              <div class="rel-ftr">F9 EDIT · F10 HIDE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- ===== INPUTS TRACE ========================== -->
+    <!-- ============================================== -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Inputs Trace</h2>
+        <span class="phase-tag">Fase 2</span>
+        <span class="dim">360 × 140 · canvas com 5s rolando</span>
+      </div>
+      <p class="section-desc">
+        Throttle (verde), brake (vermelho), clutch (azul) sobrepostos no canvas.
+        Steering bar abaixo. Útil pra analisar trail braking, abusos de throttle, suavidade.
+      </p>
+
+      <div class="variants cols-3">
+
+        <!-- INPUTS: TRAIL BRAKING -->
+        <div>
+          <div class="variant-label">Trail braking</div>
+          <div class="variant-sub">Brake decai enquanto throttle começa a subir — comum em curva longa</div>
+          <div class="stage stage-sm">
+            <div class="overlay ovl-inputs">
+              <div class="inp-hdr">
+                <span class="inp-hdr-title">INPUTS</span>
+                <span class="inp-hdr-meta">G4 · 7.2K RPM · 124 KPH</span>
+              </div>
+              <div class="inp-canvas" style="height: 96px">
+                <svg width="100%" height="100%" viewBox="0 0 336 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="0" y1="48" x2="336" y2="48" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                  <path d="M0,36 L20,38 L40,46 L60,62 L90,82 L130,86 L160,82 L190,66 L220,34 L260,14 L300,8 L336,5"
+                        fill="none" stroke="#4ade80" stroke-width="1.8"/>
+                  <path d="M0,86 L20,90 L40,90 L60,84 L90,48 L120,14 L150,22 L180,46 L210,74 L240,90 L280,91 L336,91"
+                        fill="none" stroke="#f87171" stroke-width="1.8"/>
+                  <path d="M0,91 L336,91" fill="none" stroke="#60a5fa" stroke-width="1.8" opacity="0.5"/>
+                </svg>
+              </div>
+              <div class="inp-steering">
+                <span class="inp-steering-label">Steer</span>
+                <div class="inp-steering-bar">
+                  <div class="inp-steering-center"></div>
+                  <div class="inp-steering-fill" style="left:50%; width:18%"></div>
+                </div>
+                <span class="inp-steering-deg">+42°</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INPUTS: HEAVY BRAKING -->
+        <div>
+          <div class="variant-label">Frenagem forte</div>
+          <div class="variant-sub">Throttle zero, brake máximo, downshifts — entrada de curva de baixa</div>
+          <div class="stage stage-sm">
+            <div class="overlay ovl-inputs">
+              <div class="inp-hdr">
+                <span class="inp-hdr-title">INPUTS</span>
+                <span class="inp-hdr-meta">G2 · 4.8K RPM · 78 KPH</span>
+              </div>
+              <div class="inp-canvas" style="height: 96px">
+                <svg width="100%" height="100%" viewBox="0 0 336 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="0" y1="48" x2="336" y2="48" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                  <path d="M0,5 L60,5 L120,5 L180,14 L240,36 L300,66 L336,91"
+                        fill="none" stroke="#4ade80" stroke-width="1.8"/>
+                  <path d="M0,91 L60,91 L120,91 L150,48 L180,9 L220,5 L280,5 L336,5"
+                        fill="none" stroke="#f87171" stroke-width="1.8"/>
+                  <path d="M0,91 L240,91 L260,48 L275,91 L336,91"
+                        fill="none" stroke="#60a5fa" stroke-width="1.8"/>
+                </svg>
+              </div>
+              <div class="inp-steering">
+                <span class="inp-steering-label">Steer</span>
+                <div class="inp-steering-bar">
+                  <div class="inp-steering-center"></div>
+                  <div class="inp-steering-fill" style="left:32%; width:18%"></div>
+                </div>
+                <span class="inp-steering-deg">−68°</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INPUTS: STRAIGHT FULL THROTTLE -->
+        <div>
+          <div class="variant-label">Reta a fundo</div>
+          <div class="variant-sub">Throttle 100% travado, brake zero, steering centrado</div>
+          <div class="stage stage-sm">
+            <div class="overlay ovl-inputs">
+              <div class="inp-hdr">
+                <span class="inp-hdr-title">INPUTS</span>
+                <span class="inp-hdr-meta">G6 · 8.1K RPM · 248 KPH</span>
+              </div>
+              <div class="inp-canvas" style="height: 96px">
+                <svg width="100%" height="100%" viewBox="0 0 336 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="0" y1="48" x2="336" y2="48" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                  <path d="M0,46 L60,22 L100,10 L140,5 L336,5"
+                        fill="none" stroke="#4ade80" stroke-width="1.8"/>
+                  <path d="M0,91 L336,91"
+                        fill="none" stroke="#f87171" stroke-width="1.8"/>
+                  <path d="M0,91 L336,91"
+                        fill="none" stroke="#60a5fa" stroke-width="1.8" opacity="0.5"/>
+                </svg>
+              </div>
+              <div class="inp-steering">
+                <span class="inp-steering-label">Steer</span>
+                <div class="inp-steering-bar">
+                  <div class="inp-steering-center"></div>
+                  <div class="inp-steering-fill" style="left:48%; width:4%"></div>
+                </div>
+                <span class="inp-steering-deg">+4°</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- ===== FUEL ================================== -->
+    <!-- ============================================== -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Fuel Calculator</h2>
+        <span class="phase-tag">Fase 3</span>
+        <span class="dim">280 × 180 · 4 blocos + barra de alvo</span>
+      </div>
+      <p class="section-desc">
+        Combustível atual, consumo médio, voltas que dá pra fazer com o que tem, fuel alvo pra terminar.
+        Barra final mostra delta vs alvo: positivo = sobra, negativo = falta pitar.
+      </p>
+
+      <div class="variants cols-3">
+
+        <!-- FUEL: HEALTHY -->
+        <div>
+          <div class="variant-label">Stint folgado</div>
+          <div class="variant-sub">Sobra 4.2L pro fim, sem precisar pitar — corrida planejada</div>
+          <div class="stage stage-sm">
+            <div class="overlay ovl-fuel">
+              <div class="fuel-hdr">
+                <span class="fuel-hdr-title">FUEL</span>
+                <span class="rel-conn"></span>
+              </div>
+              <div class="fuel-main">
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Atual</div>
+                  <div class="fuel-block-value good">42.3<span class="unit">L</span></div>
+                </div>
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Por volta</div>
+                  <div class="fuel-block-value">2.84<span class="unit">L</span></div>
+                </div>
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Voltas restam</div>
+                  <div class="fuel-block-value">14.9</div>
+                </div>
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Sessão</div>
+                  <div class="fuel-block-value">13.4</div>
+                </div>
+              </div>
+              <div class="fuel-target">
+                <span class="fuel-target-label">vs Alvo</span>
+                <span class="fuel-target-delta good">+4.26 L</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FUEL: MARGINAL -->
+        <div>
+          <div class="variant-label">No limite</div>
+          <div class="variant-sub">Termina raspando o tanque — precisa lift-and-coast nas últimas voltas</div>
+          <div class="stage stage-sm">
+            <div class="overlay ovl-fuel">
+              <div class="fuel-hdr">
+                <span class="fuel-hdr-title">FUEL</span>
+                <span class="rel-conn"></span>
+              </div>
+              <div class="fuel-main">
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Atual</div>
+                  <div class="fuel-block-value warn">18.2<span class="unit">L</span></div>
+                </div>
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Por volta</div>
+                  <div class="fuel-block-value">2.91<span class="unit">L</span></div>
+                </div>
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Voltas restam</div>
+                  <div class="fuel-block-value">6.2</div>
+                </div>
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Sessão</div>
+                  <div class="fuel-block-value">6.0</div>
+                </div>
+              </div>
+              <div class="fuel-target">
+                <span class="fuel-target-label">vs Alvo</span>
+                <span class="fuel-target-delta warn">+0.58 L</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FUEL: CRITICAL -->
+        <div>
+          <div class="variant-label">Crítico</div>
+          <div class="variant-sub">Não termina sem pitar OU sem lift agressivo. Vermelho diz tudo</div>
+          <div class="stage stage-sm">
+            <div class="overlay ovl-fuel">
+              <div class="fuel-hdr">
+                <span class="fuel-hdr-title">FUEL</span>
+                <span class="rel-conn"></span>
+              </div>
+              <div class="fuel-main">
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Atual</div>
+                  <div class="fuel-block-value alert">8.4<span class="unit">L</span></div>
+                </div>
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Por volta</div>
+                  <div class="fuel-block-value">2.98<span class="unit">L</span></div>
+                </div>
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Voltas restam</div>
+                  <div class="fuel-block-value alert">2.8</div>
+                </div>
+                <div class="fuel-block">
+                  <div class="fuel-block-label">Sessão</div>
+                  <div class="fuel-block-value">5.0</div>
+                </div>
+              </div>
+              <div class="fuel-target">
+                <span class="fuel-target-label">vs Alvo</span>
+                <span class="fuel-target-delta bad">−6.50 L</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- ===== TIRES ================================= -->
+    <!-- ============================================== -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Tires</h2>
+        <span class="phase-tag">Fase 4</span>
+        <span class="dim">280 × 160 · pressão hot + temp 3 zonas</span>
+      </div>
+      <p class="section-desc">
+        4 quadrantes (LF/RF/LR/RR). Pressão hot atualiza ao vivo. Temperatura é snapshot
+        da última volta finalizada (badge "L12" deixa isso claro). Wear fica de fora — Fase 4.5.
+        Tira de temperatura mostra 3 zonas com labels <strong>espelhados geometricamente</strong> —
+        LF/LR são <code>O M I</code> (esquerda → direita = externo → interno do carro), RF/RR são <code>I M O</code>.
+        Bate com a vista de cima do carro: o lado externo dos pneus sempre fica na borda externa do overlay.
+      </p>
+
+      <div class="variants cols-3">
+
+        <!-- TIRES: COLD OUT LAP -->
+        <div>
+          <div class="variant-label">Out lap (pneus frios)</div>
+          <div class="variant-sub">Pressões baixas, temps azuis. Cuidado com aquecimento desbalanceado</div>
+          <div class="stage stage-sm">
+            <div class="overlay ovl-tires">
+              <div class="tires-hdr">
+                <span class="tires-hdr-title">TIRES</span>
+                <span class="tires-hdr-meta">SOFT · AIR 18°C · TRK 24°C</span>
+              </div>
+              <div class="tires-grid">
+                <div class="tire">
+                  <div class="tire-label">LF <span class="tire-lap-badge">L2</span></div>
+                  <div class="tire-pressure cold">128<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>O</span><span>M</span><span>I</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-cool">66</div>
+                    <div class="tire-temp-cell tt-cold">58</div>
+                    <div class="tire-temp-cell tt-cold">52</div>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire-label">RF <span class="tire-lap-badge">L2</span></div>
+                  <div class="tire-pressure cold">131<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>I</span><span>M</span><span>O</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-cold">55</div>
+                    <div class="tire-temp-cell tt-cool">63</div>
+                    <div class="tire-temp-cell tt-cool">68</div>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire-label">LR <span class="tire-lap-badge">L2</span></div>
+                  <div class="tire-pressure cold">125<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>O</span><span>M</span><span>I</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-cold">59</div>
+                    <div class="tire-temp-cell tt-cold">54</div>
+                    <div class="tire-temp-cell tt-cold">48</div>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire-label">RR <span class="tire-lap-badge">L2</span></div>
+                  <div class="tire-pressure cold">127<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>I</span><span>M</span><span>O</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-cold">50</div>
+                    <div class="tire-temp-cell tt-cold">56</div>
+                    <div class="tire-temp-cell tt-cool">62</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TIRES: IDEAL -->
+        <div>
+          <div class="variant-label">Stint ideal</div>
+          <div class="variant-sub">Tudo na zona verde, pressões na faixa. Carro tá feliz</div>
+          <div class="stage stage-sm">
+            <div class="overlay ovl-tires">
+              <div class="tires-hdr">
+                <span class="tires-hdr-title">TIRES</span>
+                <span class="tires-hdr-meta">SOFT · AIR 22°C · TRK 31°C</span>
+              </div>
+              <div class="tires-grid">
+                <div class="tire">
+                  <div class="tire-label">LF <span class="tire-lap-badge">L12</span></div>
+                  <div class="tire-pressure ideal">148<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>O</span><span>M</span><span>I</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-ideal">88</div>
+                    <div class="tire-temp-cell tt-ideal">85</div>
+                    <div class="tire-temp-cell tt-ideal">82</div>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire-label">RF <span class="tire-lap-badge">L12</span></div>
+                  <div class="tire-pressure ideal">151<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>I</span><span>M</span><span>O</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-ideal">81</div>
+                    <div class="tire-temp-cell tt-ideal">87</div>
+                    <div class="tire-temp-cell tt-ideal">90</div>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire-label">LR <span class="tire-lap-badge">L12</span></div>
+                  <div class="tire-pressure ideal">146<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>O</span><span>M</span><span>I</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-ideal">85</div>
+                    <div class="tire-temp-cell tt-ideal">83</div>
+                    <div class="tire-temp-cell tt-ideal">79</div>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire-label">RR <span class="tire-lap-badge">L12</span></div>
+                  <div class="tire-pressure ideal">149<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>I</span><span>M</span><span>O</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-ideal">82</div>
+                    <div class="tire-temp-cell tt-ideal">88</div>
+                    <div class="tire-temp-cell tt-ideal">86</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TIRES: OVERHEATED -->
+        <div>
+          <div class="variant-label">Pneu dianteiro direito quente</div>
+          <div class="variant-sub">RF passou do ponto. Pressão alta + temp na zona laranja. Indica abuso ou setup ruim</div>
+          <div class="stage stage-sm">
+            <div class="overlay ovl-tires">
+              <div class="tires-hdr">
+                <span class="tires-hdr-title">TIRES</span>
+                <span class="tires-hdr-meta">SOFT · AIR 28°C · TRK 42°C</span>
+              </div>
+              <div class="tires-grid">
+                <div class="tire">
+                  <div class="tire-label">LF <span class="tire-lap-badge">L18</span></div>
+                  <div class="tire-pressure ideal">155<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>O</span><span>M</span><span>I</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-warm">95</div>
+                    <div class="tire-temp-cell tt-warm">92</div>
+                    <div class="tire-temp-cell tt-ideal">88</div>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire-label">RF <span class="tire-lap-badge">L18</span></div>
+                  <div class="tire-pressure high">164<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>I</span><span>M</span><span>O</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-hot">108</div>
+                    <div class="tire-temp-cell tt-hot">104</div>
+                    <div class="tire-temp-cell tt-warm">94</div>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire-label">LR <span class="tire-lap-badge">L18</span></div>
+                  <div class="tire-pressure ideal">150<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>O</span><span>M</span><span>I</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-warm">91</div>
+                    <div class="tire-temp-cell tt-ideal">87</div>
+                    <div class="tire-temp-cell tt-ideal">84</div>
+                  </div>
+                </div>
+                <div class="tire">
+                  <div class="tire-label">RR <span class="tire-lap-badge">L18</span></div>
+                  <div class="tire-pressure ideal">153<span class="unit">kPa</span></div>
+                  <div class="tire-temp-labels">
+                    <span>I</span><span>M</span><span>O</span>
+                  </div>
+                  <div class="tire-temps">
+                    <div class="tire-temp-cell tt-ideal">85</div>
+                    <div class="tire-temp-cell tt-ideal">89</div>
+                    <div class="tire-temp-cell tt-warm">93</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- ===== TRACK MAP ============================= -->
+    <!-- ============================================== -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Track Map</h2>
+        <span class="phase-tag">Fase 5</span>
+        <span class="dim">360 × 260 · oval v1 (forma real na v2)</span>
+      </div>
+      <p class="section-desc">
+        SVG do traçado com bolinhas dos carros distribuídos por <code>CarIdxLapDistPct</code>.
+        Player em cyan, demais na cor da classe. Forma do traçado é <strong>self-building</strong>:
+        durante a primeira volta numa pista nova, overlay grava heading + velocidade e constrói o SVG
+        dinamicamente. Resultado é persistido por pista e reaproveitado em sessões futuras.
+        Funciona pra qualquer pista (oficial ou custom) sem manutenção de assets.
+      </p>
+
+      <div class="variants cols-2">
+
+        <!-- TRACK MAP: SINGLE CLASS -->
+        <div>
+          <div class="variant-label">Single class</div>
+          <div class="variant-sub">Porsche Cup, 18 carros distribuídos pela pista</div>
+          <div class="stage">
+            <div class="overlay ovl-trackmap">
+              <div class="tm-hdr">
+                <span class="tm-hdr-title">TRACK MAP</span>
+                <span class="tm-hdr-meta">OKAYAMA · 3.703 KM</span>
+              </div>
+              <div class="tm-svg-wrap">
+                <svg class="tm-svg" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Track outline (oval v1) -->
+                  <path id="track-single" d="M 60 30 L 260 30 Q 290 30 290 60 L 290 120 Q 290 150 260 150 L 60 150 Q 30 150 30 120 L 30 60 Q 30 30 60 30 Z"
+                        fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M 60 30 L 260 30 Q 290 30 290 60 L 290 120 Q 290 150 260 150 L 60 150 Q 30 150 30 120 L 30 60 Q 30 30 60 30 Z"
+                        fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+                  <!-- Start/finish line -->
+                  <line x1="160" y1="22" x2="160" y2="38" stroke="#fff" stroke-width="2"/>
+
+                  <!-- Cars: each is a positioned marker via path.getPointAtLength() in real impl.
+                       Here positions are hardcoded for the mockup. Number inside = race position. -->
+
+                  <!-- P1 -->
+                  <g><circle cx="225" cy="30" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="225" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">1</text></g>
+                  <!-- P2 -->
+                  <g><circle cx="195" cy="30" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="195" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">2</text></g>
+                  <!-- P3 -->
+                  <g><circle cx="148" cy="30" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="148" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">3</text></g>
+                  <!-- P4 -->
+                  <g><circle cx="115" cy="30" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="115" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">4</text></g>
+                  <!-- P5 -->
+                  <g><circle cx="80" cy="30" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="80" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">5</text></g>
+                  <!-- P6 -->
+                  <g><circle cx="50" cy="35" r="9" fill="#fdd835" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="50" y="38" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#0a0a0d" text-anchor="middle">6</text></g>
+                  <!-- P7 -->
+                  <g><circle cx="30" cy="68" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="30" y="71" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">7</text></g>
+                  <!-- P8 -->
+                  <g><circle cx="30" cy="100" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="30" y="103" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">8</text></g>
+                  <!-- P9 -->
+                  <g><circle cx="42" cy="135" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="42" y="138" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">9</text></g>
+                  <!-- P10 -->
+                  <g><circle cx="80" cy="150" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="80" y="153" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">10</text></g>
+
+                  <!-- PLAYER P11 (cyan, slightly larger with halo) -->
+                  <circle cx="120" cy="150" r="13" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.4"/>
+                  <g><circle cx="120" cy="150" r="10" fill="#00e5ff" stroke="#0a0a0d" stroke-width="1.5">
+                       <animate attributeName="r" values="10;11;10" dur="2s" repeatCount="indefinite"/>
+                     </circle>
+                     <text x="120" y="153" font-family="JetBrains Mono" font-size="10" font-weight="800" fill="#0a0a0d" text-anchor="middle">11</text></g>
+
+                  <!-- P12 -->
+                  <g><circle cx="160" cy="150" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="160" y="153" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">12</text></g>
+                  <!-- P13 -->
+                  <g><circle cx="195" cy="150" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="195" y="153" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">13</text></g>
+                  <!-- P14 -->
+                  <g><circle cx="240" cy="150" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="240" y="153" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">14</text></g>
+                  <!-- P15 -->
+                  <g><circle cx="278" cy="135" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="278" y="138" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">15</text></g>
+                  <!-- P16 -->
+                  <g><circle cx="290" cy="85" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="290" y="88" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">16</text></g>
+                  <!-- P17 -->
+                  <g><circle cx="278" cy="48" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="278" y="51" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">17</text></g>
+
+                  <!-- P18 in pit (dim) -->
+                  <g opacity="0.4">
+                    <circle cx="180" cy="170" r="8" fill="#43a047" stroke="#0a0a0d" stroke-width="1"/>
+                    <text x="180" y="173" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">18</text>
+                  </g>
+                  <text x="194" y="173" font-family="JetBrains Mono" font-size="8" fill="rgba(251,191,36,0.7)">P</text>
+                </svg>
+              </div>
+              <div class="tm-ftr">
+                <span>YOU · P11/18</span>
+                <span class="tm-pos-leader">LEADER: 44 (L. HAMILTON)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRACK MAP: MULTICLASS -->
+        <div>
+          <div class="variant-label">Multiclass <span class="badge future">v1.1+</span></div>
+          <div class="variant-sub">3 classes (LMDh vermelho, LMP2 azul, GTD verde). Cores diferenciadas</div>
+          <div class="stage">
+            <div class="overlay ovl-trackmap">
+              <div class="tm-hdr">
+                <span class="tm-hdr-title">TRACK MAP</span>
+                <span class="tm-hdr-meta">SEBRING · 6.019 KM</span>
+              </div>
+              <div class="tm-svg-wrap">
+                <svg class="tm-svg" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M 60 30 L 260 30 Q 290 30 290 60 L 290 120 Q 290 150 260 150 L 60 150 Q 30 150 30 120 L 30 60 Q 30 30 60 30 Z"
+                        fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M 60 30 L 260 30 Q 290 30 290 60 L 290 120 Q 290 150 260 150 L 60 150 Q 30 150 30 120 L 30 60 Q 30 30 60 30 Z"
+                        fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+                  <line x1="160" y1="22" x2="160" y2="38" stroke="#fff" stroke-width="2"/>
+
+                  <!-- LMDh class (red stroke) -->
+                  <g><circle cx="220" cy="30" r="9" fill="#e53935" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="220" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">1</text></g>
+                  <g><circle cx="155" cy="30" r="9" fill="#e53935" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="155" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">2</text></g>
+                  <g><circle cx="100" cy="30" r="9" fill="#e53935" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="100" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">3</text></g>
+                  <g><circle cx="290" cy="55" r="9" fill="#e53935" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="290" y="58" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">5</text></g>
+                  <g><circle cx="290" cy="100" r="9" fill="#e53935" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="290" y="103" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">11</text></g>
+
+                  <!-- LMP2 class (blue stroke) -->
+                  <g><circle cx="270" cy="150" r="9" fill="#1e88e5" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="270" y="153" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">6</text></g>
+                  <g><circle cx="210" cy="150" r="9" fill="#1e88e5" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="210" y="153" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">9</text></g>
+                  <g><circle cx="130" cy="150" r="9" fill="#1e88e5" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="130" y="153" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">14</text></g>
+                  <g><circle cx="50" cy="150" r="9" fill="#1e88e5" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="50" y="153" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">16</text></g>
+                  <g><circle cx="30" cy="100" r="9" fill="#1e88e5" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="30" y="103" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">19</text></g>
+
+                  <!-- GTD class (green) -->
+                  <g><circle cx="30" cy="68" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="30" y="71" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">15</text></g>
+                  <g><circle cx="65" cy="30" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="65" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">12</text></g>
+                  <g><circle cx="125" cy="30" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="125" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">10</text></g>
+                  <g><circle cx="185" cy="30" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="185" y="33" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">8</text></g>
+
+                  <!-- PLAYER P18 GTD (cyan with halo) -->
+                  <circle cx="240" cy="30" r="13" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.4"/>
+                  <g><circle cx="240" cy="30" r="10" fill="#00e5ff" stroke="#0a0a0d" stroke-width="1.5">
+                       <animate attributeName="r" values="10;11;10" dur="2s" repeatCount="indefinite"/>
+                     </circle>
+                     <text x="240" y="33" font-family="JetBrains Mono" font-size="10" font-weight="800" fill="#0a0a0d" text-anchor="middle">18</text></g>
+
+                  <g><circle cx="280" cy="135" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="280" y="138" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">20</text></g>
+                  <g><circle cx="175" cy="150" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="175" y="153" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">25</text></g>
+                  <g><circle cx="95" cy="150" r="9" fill="#43a047" stroke="#0a0a0d" stroke-width="1.5"/>
+                     <text x="95" y="153" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">29</text></g>
+                </svg>
+              </div>
+              <div class="tm-ftr">
+                <span>YOU · GTD P4/16</span>
+                <span class="tm-pos-leader">LMDh: 7 · LMP2: 31 · GTD: 93</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- ===== STANDINGS ============================= -->
+    <!-- ============================================== -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Standings</h2>
+        <span class="phase-tag">Fase 6</span>
+        <span class="dim">480 × 500 · 3 modos · iR estimator no header</span>
+      </div>
+      <p class="section-desc">
+        Leaderboard completo da sessão. Modo Race tem iR estimator no header
+        (com prefixo <code>~</code> deixando claro que é estimativa). Modos Qualy e Practice
+        têm colunas adaptadas. Multiclass adiciona coluna CLS.
+        <strong style="color: #d946ef;">Volta mais rápida da sessão</strong> aparece em roxo neon na coluna BEST
+        (convenção motorsport, mesma usada nas broadcasts de F1/IndyCar).
+      </p>
+
+      <div class="variants cols-2">
+
+        <!-- STANDINGS: RACE WITH iR+ -->
+        <div>
+          <div class="variant-label">Race — ganhando iR</div>
+          <div class="variant-sub">P6 num field de 16, SOF alto, iR estimator +24 (verde). +1 LAP nos retardatários</div>
+          <div class="stage stage-lg">
+            <div class="overlay ovl-standings">
+              <div class="std-hdr">
+                <div class="std-hdr-left">
+                  <div class="std-hdr-line">
+                    <span class="std-hdr-title">STANDINGS</span>
+                    <span class="rel-hdr-sep">·</span>
+                    <span class="std-hdr-track">OKAYAMA</span>
+                  </div>
+                  <div class="std-hdr-line">
+                    <span class="std-hdr-session">RACE · LAP 14/22 · SOF 3.2K</span>
+                  </div>
+                </div>
+                <div class="std-ir-est">
+                  <span class="std-ir-value good">~+24</span>
+                  <span class="std-ir-label">iR EST</span>
+                </div>
+              </div>
+              <div class="std-cols race">
+                <span>P</span><span>CAR</span><span>DRIVER</span>
+                <span class="rel-cols right">iR</span>
+                <span class="rel-cols right">LEADER</span>
+                <span class="rel-cols right">AHEAD</span>
+                <span class="rel-cols right">LAST</span>
+                <span class="rel-cols right">BEST</span>
+              </div>
+              <ul style="list-style:none">
+                <li class="std-row race" style="--class-color: #43a047">
+                  <span class="std-pos">1</span><span class="std-car">16</span><span class="std-name">C. Leclerc</span>
+                  <span class="std-ir">7.8k</span>
+                  <span class="std-time bold">━</span>
+                  <span class="std-time">━</span>
+                  <span class="std-time">1:27.001</span><span class="std-time fastest">1:26.580</span>
+                </li>
+                <li class="std-row race" style="--class-color: #43a047">
+                  <span class="std-pos">2</span><span class="std-car">4</span><span class="std-name">L. Norris</span>
+                  <span class="std-ir">6.2k</span>
+                  <span class="std-time bold">+1.421</span>
+                  <span class="std-delta bad">+1.421</span>
+                  <span class="std-time">1:27.012</span><span class="std-time">1:26.890</span>
+                </li>
+                <li class="std-row race" style="--class-color: #43a047">
+                  <span class="std-pos">3</span><span class="std-car">63</span><span class="std-name">G. Russell</span>
+                  <span class="std-ir">6.7k</span>
+                  <span class="std-time bold">+3.832</span>
+                  <span class="std-delta bad">+2.411</span>
+                  <span class="std-time">1:27.421</span><span class="std-time">1:27.090</span>
+                </li>
+                <li class="std-row race" style="--class-color: #43a047">
+                  <span class="std-pos">4</span><span class="std-car">44</span><span class="std-name">L. Hamilton</span>
+                  <span class="std-ir">5.4k</span>
+                  <span class="std-time bold">+5.220</span>
+                  <span class="std-delta bad">+1.388</span>
+                  <span class="std-time">1:27.123</span><span class="std-time">1:26.401</span>
+                </li>
+                <li class="std-row race" style="--class-color: #43a047">
+                  <span class="std-pos">5</span><span class="std-car">81</span><span class="std-name">O. Piastri</span>
+                  <span class="std-ir">5.9k</span>
+                  <span class="std-time bold">+7.834</span>
+                  <span class="std-delta bad">+2.614</span>
+                  <span class="std-time">1:27.456</span><span class="std-time">1:27.040</span>
+                </li>
+                <li class="std-row race player" style="--class-color: #43a047">
+                  <span class="std-pos">6</span><span class="std-car">77</span><span class="std-name">L. Amaral</span>
+                  <span class="std-ir">2.1k</span>
+                  <span class="std-time bold">+9.224</span>
+                  <span class="std-delta neutral">+1.390</span>
+                  <span class="std-time">1:27.890</span><span class="std-time">1:27.621</span>
+                </li>
+                <li class="std-row race" style="--class-color: #43a047">
+                  <span class="std-pos">7</span><span class="std-car">11</span><span class="std-name">S. Perez</span>
+                  <span class="std-ir">4.8k</span>
+                  <span class="std-time bold">+11.418</span>
+                  <span class="std-delta good">+2.194</span>
+                  <span class="std-time">1:28.034</span><span class="std-time">1:27.810</span>
+                </li>
+                <li class="std-row race" style="--class-color: #43a047">
+                  <span class="std-pos">8</span><span class="std-car">31</span><span class="std-name">E. Ocon</span>
+                  <span class="std-ir">3.9k</span>
+                  <span class="std-time bold">+14.220</span>
+                  <span class="std-delta good">+2.802</span>
+                  <span class="std-time">1:28.290</span><span class="std-time">1:27.998</span>
+                </li>
+                <li class="std-row race" style="--class-color: #fdd835">
+                  <span class="std-pos">9</span><span class="std-car">23</span><span class="std-name">S. Knight</span>
+                  <span class="std-ir">1.8k</span>
+                  <span class="std-time bold">+18.901</span>
+                  <span class="std-delta good">+4.681</span>
+                  <span class="std-time">1:29.123</span><span class="std-time">1:28.504</span>
+                </li>
+                <li class="std-row race lapped" style="--class-color: #43a047">
+                  <span class="std-pos">15</span><span class="std-car">88</span><span class="std-name">R. Schwartzman</span>
+                  <span class="std-ir">2.3k</span>
+                  <span class="std-time bold">+1 LAP</span>
+                  <span class="std-delta lap-down">+1 LAP</span>
+                  <span class="std-time">1:30.211</span><span class="std-time">1:29.421</span>
+                </li>
+                <li class="std-row race lapped" style="--class-color: #fb8c00">
+                  <span class="std-pos">16</span><span class="std-car">66</span><span class="std-name">L. Karjala</span>
+                  <span class="std-ir">1.4k</span>
+                  <span class="std-time bold">+2 LAPS</span>
+                  <span class="std-delta lap-down">+2 LAPS</span>
+                  <span class="std-time">1:31.890</span><span class="std-time">1:30.412</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- STANDINGS: RACE WITH iR- -->
+        <div>
+          <div class="variant-label">Race — perdendo iR</div>
+          <div class="variant-sub">Mesmo field, mas player caiu pra P11 — iR estimator vai pra −18 (vermelho)</div>
+          <div class="stage stage-lg">
+            <div class="overlay ovl-standings">
+              <div class="std-hdr">
+                <div class="std-hdr-left">
+                  <div class="std-hdr-line">
+                    <span class="std-hdr-title">STANDINGS</span>
+                    <span class="rel-hdr-sep">·</span>
+                    <span class="std-hdr-track">OKAYAMA</span>
+                  </div>
+                  <div class="std-hdr-line">
+                    <span class="std-hdr-session">RACE · LAP 18/22 · SOF 3.2K</span>
+                  </div>
+                </div>
+                <div class="std-ir-est">
+                  <span class="std-ir-value bad">~−18</span>
+                  <span class="std-ir-label">iR EST</span>
+                </div>
+              </div>
+              <div class="std-cols race">
+                <span>P</span><span>CAR</span><span>DRIVER</span>
+                <span class="rel-cols right">iR</span>
+                <span class="rel-cols right">LEADER</span>
+                <span class="rel-cols right">AHEAD</span>
+                <span class="rel-cols right">LAST</span>
+                <span class="rel-cols right">BEST</span>
+              </div>
+              <ul style="list-style:none">
+                <li class="std-row race" style="--class-color: #43a047">
+                  <span class="std-pos">8</span><span class="std-car">31</span><span class="std-name">E. Ocon</span>
+                  <span class="std-ir">3.9k</span>
+                  <span class="std-time bold">+19.421</span>
+                  <span class="std-delta bad">+2.110</span>
+                  <span class="std-time">1:28.290</span><span class="std-time">1:27.998</span>
+                </li>
+                <li class="std-row race" style="--class-color: #fdd835">
+                  <span class="std-pos">9</span><span class="std-car">23</span><span class="std-name">S. Knight</span>
+                  <span class="std-ir">1.8k</span>
+                  <span class="std-time bold">+23.110</span>
+                  <span class="std-delta bad">+3.689</span>
+                  <span class="std-time">1:29.123</span><span class="std-time">1:28.504</span>
+                </li>
+                <li class="std-row race" style="--class-color: #43a047">
+                  <span class="std-pos">10</span><span class="std-car">22</span><span class="std-name">Y. Tsunoda</span>
+                  <span class="std-ir">3.1k</span>
+                  <span class="std-time bold">+26.890</span>
+                  <span class="std-delta bad">+3.780</span>
+                  <span class="std-time">1:28.991</span><span class="std-time">1:28.221</span>
+                </li>
+                <li class="std-row race player" style="--class-color: #43a047">
+                  <span class="std-pos">11</span><span class="std-car">77</span><span class="std-name">L. Amaral</span>
+                  <span class="std-ir">2.1k</span>
+                  <span class="std-time bold">+30.412</span>
+                  <span class="std-delta neutral">+3.522</span>
+                  <span class="std-time">1:29.024</span><span class="std-time">1:28.502</span>
+                </li>
+                <li class="std-row race" style="--class-color: #fdd835">
+                  <span class="std-pos">12</span><span class="std-car">14</span><span class="std-name">F. Alonso</span>
+                  <span class="std-ir">2.6k</span>
+                  <span class="std-time bold">+32.811</span>
+                  <span class="std-delta good">+2.399</span>
+                  <span class="std-time">1:28.890</span><span class="std-time">1:28.501</span>
+                </li>
+                <li class="std-row race" style="--class-color: #fdd835">
+                  <span class="std-pos">13</span><span class="std-car">55</span><span class="std-name">C. Sainz</span>
+                  <span class="std-ir">2.9k</span>
+                  <span class="std-time bold">+35.221</span>
+                  <span class="std-delta good">+2.410</span>
+                  <span class="std-time">1:28.910</span><span class="std-time">1:28.412</span>
+                </li>
+                <li class="std-row race" style="--class-color: #fdd835">
+                  <span class="std-pos">14</span><span class="std-car">3</span><span class="std-name">D. Ricciardo</span>
+                  <span class="std-ir">2.4k</span>
+                  <span class="std-time bold">+38.412</span>
+                  <span class="std-delta good">+3.191</span>
+                  <span class="std-time">1:29.220</span><span class="std-time">1:28.610</span>
+                </li>
+                <li class="std-row race lapped" style="--class-color: #43a047">
+                  <span class="std-pos">15</span><span class="std-car">88</span><span class="std-name">R. Schwartzman</span>
+                  <span class="std-ir">2.3k</span>
+                  <span class="std-time bold">+1 LAP</span>
+                  <span class="std-delta lap-down">+1 LAP</span>
+                  <span class="std-time">1:30.211</span><span class="std-time">1:29.421</span>
+                </li>
+                <li class="std-row race lapped" style="--class-color: #fb8c00">
+                  <span class="std-pos">16</span><span class="std-car">66</span><span class="std-name">L. Karjala</span>
+                  <span class="std-ir">1.4k</span>
+                  <span class="std-time bold">+2 LAPS</span>
+                  <span class="std-delta lap-down">+2 LAPS</span>
+                  <span class="std-time">1:31.890</span><span class="std-time">1:30.412</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- STANDINGS: QUALY -->
+        <div>
+          <div class="variant-label">Qualifying</div>
+          <div class="variant-sub">Ordenado por best lap. iR estimator NÃO aparece (só em Race). Coluna STATUS mostra OUT/IN/FLYING</div>
+          <div class="stage stage-lg">
+            <div class="overlay ovl-standings">
+              <div class="std-hdr">
+                <div class="std-hdr-left">
+                  <div class="std-hdr-line">
+                    <span class="std-hdr-title">STANDINGS</span>
+                    <span class="rel-hdr-sep">·</span>
+                    <span class="std-hdr-track">OKAYAMA</span>
+                  </div>
+                  <div class="std-hdr-line">
+                    <span class="std-hdr-session">QUALY · 8:32 LEFT</span>
+                  </div>
+                </div>
+              </div>
+              <div class="std-cols qualy">
+                <span>P</span><span>CAR</span><span>DRIVER</span>
+                <span class="rel-cols right">iR</span>
+                <span class="rel-cols right">BEST</span>
+                <span class="rel-cols right">Δ P1</span>
+                <span class="rel-cols right">LAST</span>
+                <span class="rel-cols right">STATUS</span>
+              </div>
+              <ul style="list-style:none">
+                <li class="std-row qualy" style="--class-color: #43a047">
+                  <span class="std-pos">1</span><span class="std-car">44</span><span class="std-name">L. Hamilton</span>
+                  <span class="std-ir">5.4k</span>
+                  <span class="std-time fastest">1:26.401</span>
+                  <span class="std-delta neutral">━</span>
+                  <span class="std-time">1:26.401</span>
+                  <span class="std-status in">IN LAP</span>
+                </li>
+                <li class="std-row qualy" style="--class-color: #43a047">
+                  <span class="std-pos">2</span><span class="std-car">16</span><span class="std-name">C. Leclerc</span>
+                  <span class="std-ir">7.8k</span>
+                  <span class="std-time bold">1:26.580</span>
+                  <span class="std-delta bad">+0.179</span>
+                  <span class="std-time">1:26.890</span>
+                  <span class="std-status flying">FLYING</span>
+                </li>
+                <li class="std-row qualy" style="--class-color: #43a047">
+                  <span class="std-pos">3</span><span class="std-car">4</span><span class="std-name">L. Norris</span>
+                  <span class="std-ir">6.2k</span>
+                  <span class="std-time bold">1:26.890</span>
+                  <span class="std-delta bad">+0.489</span>
+                  <span class="std-time">1:27.090</span>
+                  <span class="std-status flying">FLYING</span>
+                </li>
+                <li class="std-row qualy" style="--class-color: #43a047">
+                  <span class="std-pos">4</span><span class="std-car">63</span><span class="std-name">G. Russell</span>
+                  <span class="std-ir">6.7k</span>
+                  <span class="std-time bold">1:27.090</span>
+                  <span class="std-delta bad">+0.689</span>
+                  <span class="std-time">1:28.012</span>
+                  <span class="std-status out">OUT LAP</span>
+                </li>
+                <li class="std-row qualy" style="--class-color: #43a047">
+                  <span class="std-pos">5</span><span class="std-car">81</span><span class="std-name">O. Piastri</span>
+                  <span class="std-ir">5.9k</span>
+                  <span class="std-time bold">1:27.420</span>
+                  <span class="std-delta bad">+1.019</span>
+                  <span class="std-time">1:27.840</span>
+                  <span class="std-status flying">FLYING</span>
+                </li>
+                <li class="std-row qualy player" style="--class-color: #43a047">
+                  <span class="std-pos">6</span><span class="std-car">77</span><span class="std-name">L. Amaral</span>
+                  <span class="std-ir">2.1k</span>
+                  <span class="std-time bold">1:27.621</span>
+                  <span class="std-delta neutral">+1.220</span>
+                  <span class="std-time">1:27.621</span>
+                  <span class="std-status flying">FLYING</span>
+                </li>
+                <li class="std-row qualy" style="--class-color: #43a047">
+                  <span class="std-pos">7</span><span class="std-car">11</span><span class="std-name">S. Perez</span>
+                  <span class="std-ir">4.8k</span>
+                  <span class="std-time bold">1:27.810</span>
+                  <span class="std-delta bad">+1.409</span>
+                  <span class="std-time">1:28.421</span>
+                  <span class="std-status out">OUT LAP</span>
+                </li>
+                <li class="std-row qualy" style="--class-color: #43a047">
+                  <span class="std-pos">8</span><span class="std-car">31</span><span class="std-name">E. Ocon</span>
+                  <span class="std-ir">3.9k</span>
+                  <span class="std-time bold">1:27.998</span>
+                  <span class="std-delta bad">+1.597</span>
+                  <span class="std-time">1:28.290</span>
+                  <span class="std-status in">IN LAP</span>
+                </li>
+                <li class="std-row qualy" style="--class-color: #fdd835">
+                  <span class="std-pos">9</span><span class="std-car">23</span><span class="std-name">S. Knight</span>
+                  <span class="std-ir">1.8k</span>
+                  <span class="std-time bold">1:28.504</span>
+                  <span class="std-delta bad">+2.103</span>
+                  <span class="std-time">1:29.123</span>
+                  <span class="std-status flying">FLYING</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- STANDINGS: PRACTICE -->
+        <div>
+          <div class="variant-label">Practice</div>
+          <div class="variant-sub">Ordenado por best lap. Coluna LAPS DONE pra dimensionar atividade. Sem iR estimator</div>
+          <div class="stage stage-lg">
+            <div class="overlay ovl-standings">
+              <div class="std-hdr">
+                <div class="std-hdr-left">
+                  <div class="std-hdr-line">
+                    <span class="std-hdr-title">STANDINGS</span>
+                    <span class="rel-hdr-sep">·</span>
+                    <span class="std-hdr-track">OKAYAMA</span>
+                  </div>
+                  <div class="std-hdr-line">
+                    <span class="std-hdr-session">PRACTICE · 22:14 LEFT</span>
+                  </div>
+                </div>
+              </div>
+              <div class="std-cols prac">
+                <span>P</span><span>CAR</span><span>DRIVER</span>
+                <span class="rel-cols right">iR</span>
+                <span class="rel-cols right">BEST</span>
+                <span class="rel-cols right">Δ P1</span>
+                <span class="rel-cols right">LAST</span>
+                <span class="rel-cols right">LAPS</span>
+              </div>
+              <ul style="list-style:none">
+                <li class="std-row prac" style="--class-color: #43a047">
+                  <span class="std-pos">1</span><span class="std-car">16</span><span class="std-name">C. Leclerc</span>
+                  <span class="std-ir">7.8k</span>
+                  <span class="std-time fastest">1:26.890</span>
+                  <span class="std-delta neutral">━</span>
+                  <span class="std-time">1:27.421</span>
+                  <span class="std-time">18</span>
+                </li>
+                <li class="std-row prac" style="--class-color: #43a047">
+                  <span class="std-pos">2</span><span class="std-car">44</span><span class="std-name">L. Hamilton</span>
+                  <span class="std-ir">5.4k</span>
+                  <span class="std-time bold">1:27.012</span>
+                  <span class="std-delta bad">+0.122</span>
+                  <span class="std-time">1:27.890</span>
+                  <span class="std-time">22</span>
+                </li>
+                <li class="std-row prac" style="--class-color: #43a047">
+                  <span class="std-pos">3</span><span class="std-car">63</span><span class="std-name">G. Russell</span>
+                  <span class="std-ir">6.7k</span>
+                  <span class="std-time bold">1:27.090</span>
+                  <span class="std-delta bad">+0.200</span>
+                  <span class="std-time">1:28.012</span>
+                  <span class="std-time">15</span>
+                </li>
+                <li class="std-row prac" style="--class-color: #43a047">
+                  <span class="std-pos">4</span><span class="std-car">4</span><span class="std-name">L. Norris</span>
+                  <span class="std-ir">6.2k</span>
+                  <span class="std-time bold">1:27.421</span>
+                  <span class="std-delta bad">+0.531</span>
+                  <span class="std-time">1:27.890</span>
+                  <span class="std-time">19</span>
+                </li>
+                <li class="std-row prac player" style="--class-color: #43a047">
+                  <span class="std-pos">5</span><span class="std-car">77</span><span class="std-name">L. Amaral</span>
+                  <span class="std-ir">2.1k</span>
+                  <span class="std-time bold">1:27.782</span>
+                  <span class="std-delta neutral">+0.892</span>
+                  <span class="std-time">1:28.234</span>
+                  <span class="std-time">12</span>
+                </li>
+                <li class="std-row prac" style="--class-color: #43a047">
+                  <span class="std-pos">6</span><span class="std-car">81</span><span class="std-name">O. Piastri</span>
+                  <span class="std-ir">5.9k</span>
+                  <span class="std-time bold">1:27.998</span>
+                  <span class="std-delta bad">+1.108</span>
+                  <span class="std-time">1:28.420</span>
+                  <span class="std-time">14</span>
+                </li>
+                <li class="std-row prac" style="--class-color: #43a047">
+                  <span class="std-pos">7</span><span class="std-car">11</span><span class="std-name">S. Perez</span>
+                  <span class="std-ir">4.8k</span>
+                  <span class="std-time bold">1:28.121</span>
+                  <span class="std-delta bad">+1.231</span>
+                  <span class="std-time">1:28.890</span>
+                  <span class="std-time">11</span>
+                </li>
+                <li class="std-row prac" style="--class-color: #fdd835">
+                  <span class="std-pos">8</span><span class="std-car">23</span><span class="std-name">S. Knight</span>
+                  <span class="std-ir">1.8k</span>
+                  <span class="std-time bold">1:28.890</span>
+                  <span class="std-delta bad">+2.000</span>
+                  <span class="std-time">1:29.123</span>
+                  <span class="std-time">8</span>
+                </li>
+                <li class="std-row prac" style="--class-color: #fb8c00">
+                  <span class="std-pos">9</span><span class="std-car">66</span><span class="std-name">L. Karjala</span>
+                  <span class="std-ir">1.4k</span>
+                  <span class="std-time bold">1:30.412</span>
+                  <span class="std-delta bad">+3.522</span>
+                  <span class="std-time">1:31.890</span>
+                  <span class="std-time">6</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- ===== SPOTTER POSICIONAL ==================== -->
+    <!-- ============================================== -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Spotter Visual</h2>
+        <span class="phase-tag">Fase 7</span>
+        <span class="dim">220 × 240 · vista top-down do entorno</span>
+      </div>
+      <p class="section-desc">
+        Vista top-down mostrando seu carro no centro (cyan) e a posição angular dos adversários próximos.
+        Lateralidade vem do <code>CarLeftRight</code> do SDK; distância e frente/trás do delta de <code>CarIdxLapDistPct</code>.
+        Cor por proximidade: cinza (>5m), amarelo (3-5m), vermelho (lado-a-lado, &lt;3m).
+        <strong>Overlay aparece apenas quando há aproximação</strong> (adversário a &lt;15m).
+        Pista limpa = overlay invisível, zero pixels. Fade-in instantâneo (150ms) quando alguém aparece;
+        fade-out com debounce de 2s + 400ms na transição, pra evitar piscar com carros passando rapidinho.
+      </p>
+
+      <style>
+        .ovl-spotter {
+          width: 220px; height: 240px;
+          padding: 0;
+          position: relative;
+        }
+        .sp-hdr {
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 8px 12px; border-bottom: 1px solid var(--border);
+          font-size: 10px; letter-spacing: 0.08em;
+        }
+        .sp-hdr-title { font-weight: 800; text-transform: uppercase; }
+        .sp-hdr-speed { font-family: var(--font-mono); color: var(--text-secondary); font-size: 11px; font-weight: 600; }
+        .sp-canvas {
+          position: relative;
+          width: 100%; height: 200px;
+          padding: 14px;
+        }
+        .sp-svg { width: 100%; height: 100%; }
+      </style>
+
+      <div class="variants cols-2">
+
+        <!-- SPOTTER POS: CAR BEHIND -->
+        <div>
+          <div class="variant-label">Carro logo atrás</div>
+          <div class="variant-sub">Adversário aproximando por trás (3-5m, amarelo). Comum em reta antes da freada — atenção pra defender</div>
+          <div class="stage">
+            <div class="overlay ovl-spotter">
+              <div class="sp-hdr">
+                <span class="sp-hdr-title">SPOTTER</span>
+                <span class="sp-hdr-speed">232 KM/H</span>
+              </div>
+              <div class="sp-canvas">
+                <svg class="sp-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="90" cy="90" r="85" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                  <circle cx="90" cy="90" r="55" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" stroke-dasharray="2,4"/>
+                  <circle cx="90" cy="90" r="28" fill="none" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,3"/>
+                  <rect x="84" y="124" width="13" height="26" rx="3" fill="#fbbf24" stroke="#0a0a0d" stroke-width="1"/>
+                  <rect x="83" y="74" width="14" height="32" rx="3" fill="#00e5ff" stroke="#0a0a0d" stroke-width="1"/>
+                  <polygon points="90,68 86,76 94,76" fill="#00e5ff"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPOTTER POS: SIDE BY SIDE LEFT -->
+        <div>
+          <div class="variant-label">Lado a lado esquerda</div>
+          <div class="variant-sub">Adversário colado na sua esquerda — vermelho indica overlap crítico (&lt;5m)</div>
+          <div class="stage">
+            <div class="overlay ovl-spotter">
+              <div class="sp-hdr">
+                <span class="sp-hdr-title">SPOTTER</span>
+                <span class="sp-hdr-speed">156 KM/H</span>
+              </div>
+              <div class="sp-canvas">
+                <svg class="sp-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="90" cy="90" r="85" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                  <circle cx="90" cy="90" r="55" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" stroke-dasharray="2,4"/>
+                  <circle cx="90" cy="90" r="28" fill="none" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,3"/>
+                  <rect x="55" y="76" width="14" height="28" rx="3" fill="#f87171" stroke="#0a0a0d" stroke-width="1"/>
+                  <rect x="83" y="74" width="14" height="32" rx="3" fill="#00e5ff" stroke="#0a0a0d" stroke-width="1"/>
+                  <polygon points="90,68 86,76 94,76" fill="#00e5ff"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPOTTER POS: THREE WIDE -->
+        <div>
+          <div class="variant-label">Three wide</div>
+          <div class="variant-sub">Carros nos dois lados simultaneamente. Situação crítica em corner entry</div>
+          <div class="stage">
+            <div class="overlay ovl-spotter">
+              <div class="sp-hdr">
+                <span class="sp-hdr-title">SPOTTER</span>
+                <span class="sp-hdr-speed">142 KM/H</span>
+              </div>
+              <div class="sp-canvas">
+                <svg class="sp-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="90" cy="90" r="85" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                  <circle cx="90" cy="90" r="55" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" stroke-dasharray="2,4"/>
+                  <circle cx="90" cy="90" r="28" fill="none" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,3"/>
+                  <rect x="55" y="76" width="14" height="28" rx="3" fill="#f87171" stroke="#0a0a0d" stroke-width="1"/>
+                  <rect x="111" y="76" width="14" height="28" rx="3" fill="#f87171" stroke="#0a0a0d" stroke-width="1"/>
+                  <rect x="83" y="74" width="14" height="32" rx="3" fill="#00e5ff" stroke="#0a0a0d" stroke-width="1"/>
+                  <polygon points="90,68 86,76 94,76" fill="#00e5ff"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPOTTER POS: MIXED TRAFFIC -->
+        <div>
+          <div class="variant-label">Tráfego misto</div>
+          <div class="variant-sub">Carro chegando atrás-esquerda (vermelho, perto) + carro à frente-direita distante (cinza)</div>
+          <div class="stage">
+            <div class="overlay ovl-spotter">
+              <div class="sp-hdr">
+                <span class="sp-hdr-title">SPOTTER</span>
+                <span class="sp-hdr-speed">218 KM/H</span>
+              </div>
+              <div class="sp-canvas">
+                <svg class="sp-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="90" cy="90" r="85" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                  <circle cx="90" cy="90" r="55" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" stroke-dasharray="2,4"/>
+                  <circle cx="90" cy="90" r="28" fill="none" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,3"/>
+                  <rect x="63" y="104" width="13" height="26" rx="3" fill="#f87171" stroke="#0a0a0d" stroke-width="1"/>
+                  <rect x="118" y="36" width="12" height="22" rx="3" fill="rgba(255,255,255,0.32)" stroke="#0a0a0d" stroke-width="1"/>
+                  <rect x="83" y="74" width="14" height="32" rx="3" fill="#00e5ff" stroke="#0a0a0d" stroke-width="1"/>
+                  <polygon points="90,68 86,76 94,76" fill="#00e5ff"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- ===== CONTROL PANEL ========================= -->
+    <!-- ============================================== -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Control Panel</h2>
+        <span class="phase-tag">Fase 1</span>
+        <span class="dim">480 × 600 · janela normal (taskbar) · única não-overlay do app</span>
+      </div>
+      <p class="section-desc">
+        Painel principal pra ligar/desligar cada overlay individualmente.
+        Cada item da lista tem um <strong>checkbox custom-styled</strong> que controla a visibilidade
+        do overlay correspondente (marcado = janela criada e visível; desmarcado = janela destruída,
+        posição preservada pra próxima vez). Clique no nome do overlay também alterna o checkbox.
+      </p>
+
+      <style>
+        .ovl-control {
+          width: 440px;
+          background: var(--surface-bg-solid);
+          border-radius: 10px;
+          padding: 20px;
+          font-family: var(--font-display);
+        }
+        .ctrl-title {
+          font-size: 14px;
+          font-weight: 800;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          margin-bottom: 4px;
+        }
+        .ctrl-sub {
+          font-size: 11px;
+          color: var(--text-muted);
+          margin-bottom: 20px;
+          letter-spacing: 0.05em;
+        }
+        .ctrl-conn {
+          display: flex; align-items: center; gap: 10px;
+          padding: 10px 12px;
+          background: var(--surface-elev);
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          margin-bottom: 20px;
+          font-size: 12px;
+        }
+        .ctrl-conn-dot {
+          width: 8px; height: 8px; border-radius: 50%;
+          background: var(--pos-good);
+          box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+        }
+        .ctrl-section-hdr {
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          margin-bottom: 8px;
+        }
+        .ctrl-list { list-style: none; margin-bottom: 20px; padding: 0; }
+        .ctrl-item {
+          display: flex; align-items: center; gap: 12px;
+          padding: 11px 14px;
+          background: var(--surface-elev);
+          border: 1px solid var(--border);
+          border-radius: 6px;
+          margin-bottom: 4px;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 120ms, border-color 120ms;
+        }
+        .ctrl-item:hover {
+          background: var(--surface-elev-hi);
+          border-color: var(--border-strong);
+        }
+        .ctrl-item.checked .ctrl-name { color: var(--text-primary); }
+        .ctrl-item:not(.checked) .ctrl-name { color: var(--text-secondary); }
+
+        .ctrl-checkbox {
+          width: 18px; height: 18px;
+          border-radius: 4px;
+          border: 1.5px solid rgba(255, 255, 255, 0.25);
+          background: transparent;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0;
+          transition: all 120ms;
+        }
+        .ctrl-item.checked .ctrl-checkbox {
+          background: var(--accent);
+          border-color: var(--accent);
+          box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+        }
+        .ctrl-checkbox svg { display: none; }
+        .ctrl-item.checked .ctrl-checkbox svg { display: block; }
+
+        .ctrl-name { flex: 1; }
+        .ctrl-meta {
+          font-family: var(--font-mono);
+          font-size: 10px;
+          color: var(--text-muted);
+          font-weight: 500;
+          letter-spacing: 0.05em;
+        }
+
+        .ctrl-actions { display: flex; gap: 8px; margin-bottom: 16px; }
+        .ctrl-btn {
+          flex: 1;
+          background: var(--surface-elev);
+          border: 1px solid var(--border);
+          color: var(--text-primary);
+          padding: 10px;
+          border-radius: 6px;
+          font: inherit;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          cursor: pointer;
+        }
+        .ctrl-hint {
+          padding: 12px;
+          background: rgba(0, 229, 255, 0.04);
+          border: 1px solid rgba(0, 229, 255, 0.15);
+          border-radius: 6px;
+          font-size: 11px;
+          line-height: 1.7;
+          color: var(--text-secondary);
+        }
+        .ctrl-kbd {
+          font-family: var(--font-mono);
+          background: var(--surface-elev-hi);
+          padding: 1px 5px;
+          border-radius: 3px;
+          font-size: 10px;
+          margin-right: 4px;
+          color: var(--text-primary);
+        }
+      </style>
+
+      <div class="variants cols-1">
+
+        <div>
+          <div class="variant-label">Control Panel · estado típico</div>
+          <div class="variant-sub">7 overlays disponíveis, 4 ativos (Relative, Fuel, Track Map, Spotter). Tires e Standings desligados — janelas serão destruídas, mas posição salva pra próxima vez que ligar</div>
+          <div class="stage">
+            <div class="ovl-control">
+              <div class="ctrl-title">BoxBoxBox</div>
+              <div class="ctrl-sub">Control panel</div>
+
+              <div class="ctrl-conn">
+                <span class="ctrl-conn-dot"></span>
+                <span>Connected to iRacing · Okayama · Porsche 911 Cup</span>
+              </div>
+
+              <div class="ctrl-section-hdr">Overlays</div>
+              <ul class="ctrl-list">
+                <li class="ctrl-item checked">
+                  <div class="ctrl-checkbox">
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                      <path d="M1 5.5L4 8.5L10 1.5" stroke="#0a0a0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <span class="ctrl-name">Relative</span>
+                  <span class="ctrl-meta">420×320</span>
+                </li>
+                <li class="ctrl-item checked">
+                  <div class="ctrl-checkbox">
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                      <path d="M1 5.5L4 8.5L10 1.5" stroke="#0a0a0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <span class="ctrl-name">Inputs Trace</span>
+                  <span class="ctrl-meta">360×140</span>
+                </li>
+                <li class="ctrl-item checked">
+                  <div class="ctrl-checkbox">
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                      <path d="M1 5.5L4 8.5L10 1.5" stroke="#0a0a0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <span class="ctrl-name">Fuel Calculator</span>
+                  <span class="ctrl-meta">280×180</span>
+                </li>
+                <li class="ctrl-item">
+                  <div class="ctrl-checkbox">
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                      <path d="M1 5.5L4 8.5L10 1.5" stroke="#0a0a0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <span class="ctrl-name">Tires</span>
+                  <span class="ctrl-meta">280×160</span>
+                </li>
+                <li class="ctrl-item checked">
+                  <div class="ctrl-checkbox">
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                      <path d="M1 5.5L4 8.5L10 1.5" stroke="#0a0a0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <span class="ctrl-name">Track Map</span>
+                  <span class="ctrl-meta">360×260</span>
+                </li>
+                <li class="ctrl-item">
+                  <div class="ctrl-checkbox">
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                      <path d="M1 5.5L4 8.5L10 1.5" stroke="#0a0a0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <span class="ctrl-name">Standings</span>
+                  <span class="ctrl-meta">480×500</span>
+                </li>
+                <li class="ctrl-item checked">
+                  <div class="ctrl-checkbox">
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                      <path d="M1 5.5L4 8.5L10 1.5" stroke="#0a0a0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <span class="ctrl-name">Spotter Visual</span>
+                  <span class="ctrl-meta">220×240</span>
+                </li>
+              </ul>
+
+              <div class="ctrl-section-hdr">Actions</div>
+              <div class="ctrl-actions">
+                <button class="ctrl-btn">Edit positions</button>
+                <button class="ctrl-btn">Reset positions</button>
+              </div>
+
+              <div class="ctrl-hint">
+                <span class="ctrl-kbd">F9</span> toggle edit mode (overlays viram arrastáveis)<br />
+                <span class="ctrl-kbd">F10</span> hide / show all overlays
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== FOOTER NOTES ===== -->
+    <footer class="footer-notes">
+      <h3>Notas de implementação</h3>
+      <p>
+        Todos os tamanhos, cores e tipografia aqui batem com a spec do PRD.
+        Pequenos ajustes de pixel-perfect podem ser feitos durante implementação,
+        mas a hierarquia visual, escolha de cores semânticas e densidade de informação
+        devem ser mantidas. O blur (<code>backdrop-filter: blur(18px) saturate(140%)</code>)
+        é parte essencial da identidade — sem ele os overlays parecem cartões opacos.
+      </p>
+      <p style="margin-top: 12px;">
+        Items marcados com <span class="badge future" style="background:rgba(0,229,255,0.15); color:#00e5ff; padding:2px 6px; border-radius:3px; font-size:9px;">v1.1 preview</span> são parking lot do Apêndice C do PRD. Documentados aqui pra referência futura.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

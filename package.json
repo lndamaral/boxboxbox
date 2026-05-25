@@ -1,0 +1,20 @@
+{
+  "name": "boxboxbox",
+  "version": "0.1.0",
+  "description": "Modern overlays for iRacing",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "DEBUG=boxboxbox* electron .",
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": ["iracing", "overlay", "simracing"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0"
+  },
+  "optionalDependencies": {
+    "node-irsdk-2023": "^2.1.5"
+  }
+}

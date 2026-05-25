@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotter</title>
+  <link rel="stylesheet" href="../styles/tokens.css">
+  <link rel="stylesheet" href="spotter.css">
+</head>
+<body>
+  <div class="spotter-card" id="card">
+    <div class="sp-hdr">
+      <span class="sp-hdr-title">SPOTTER</span>
+      <span class="sp-hdr-speed" id="speed">0 KM/H</span>
+    </div>
+    <div class="sp-canvas">
+      <svg id="spotterSvg" class="sp-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+        <!-- Range rings -->
+        <circle cx="90" cy="90" r="85" class="ring ring-far" />
+        <circle cx="90" cy="90" r="55" class="ring ring-mid" />
+        <circle cx="90" cy="90" r="28" class="ring ring-close" />
+        <!-- Player car -->
+        <rect id="playerCar" x="83" y="74" width="14" height="32" rx="3"
+              fill="#00e5ff" stroke="#0a0a0d" stroke-width="1" />
+        <polygon id="playerArrow" points="90,68 86,76 94,76" fill="#00e5ff" />
+        <!-- Adversary slots rendered by JS -->
+        <g id="adversaries"></g>
+      </svg>
+    </div>
+  </div>
+  <script src="spotter.js"></script>
+</body>
+</html>

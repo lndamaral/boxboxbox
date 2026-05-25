@@ -1,0 +1,149 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: transparent;
+  overflow: hidden;
+  font-family: var(--font-display);
+}
+
+.tires-card {
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 8px 32px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.tires-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.tires-hdr-title {
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.tires-hdr-meta {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.tires-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+
+.tire {
+  background: rgba(8, 10, 16, 0.5);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.tire-label {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tire-lap-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface-elev-hi);
+  padding: 1px 4px;
+  border-radius: 2px;
+  letter-spacing: 0;
+}
+
+.tire-pressure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.tire-pressure .unit {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+.tire-pressure.cold { color: var(--lapped); }
+.tire-pressure.ideal { color: var(--text-primary); }
+.tire-pressure.high { color: var(--pit-warn); }
+.tire-pressure.crit { color: var(--pos-bad); }
+.tire-pressure.uncal { color: var(--text-muted); }
+
+.temp-labels {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+.tire-temps {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.tire-temp-cell {
+  padding: 4px 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.tt-cold { background: #1e88e5; }
+.tt-cool { background: #4ade80aa; color: #052e16; }
+.tt-ideal { background: #4ade80; color: #052e16; }
+.tt-warm { background: #fbbf24; color: #422006; }
+.tt-hot { background: #fb8c00; color: #422006; }
+.tt-crit { background: #e53935; }
+.tt-uncal { background: rgba(255, 255, 255, 0.08); color: var(--text-muted); }
+
+/* Edit mode */
+body.edit-mode .tires-card {
+  -webkit-app-region: drag;
+  outline: 2px dashed var(--accent);
+  outline-offset: 2px;
+}

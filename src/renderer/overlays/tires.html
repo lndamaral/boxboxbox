@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tires</title>
+  <link rel="stylesheet" href="../styles/tokens.css">
+  <link rel="stylesheet" href="tires.css">
+</head>
+<body>
+  <div class="tires-card" id="card">
+    <div class="tires-hdr">
+      <span class="tires-hdr-title">TIRES</span>
+      <span class="tires-hdr-meta" id="headerMeta"></span>
+    </div>
+    <div class="tires-grid">
+      <div class="tire" id="qLF">
+        <div class="tire-label"><span>LF</span><span class="tire-lap-badge" id="lapLF"></span></div>
+        <div class="tire-pressure" id="pLF">--<span class="unit">kPa</span></div>
+        <div class="temp-labels"><span>O</span><span>M</span><span>I</span></div>
+        <div class="tire-temps">
+          <div class="tire-temp-cell" id="tLF_CL"><span></span></div>
+          <div class="tire-temp-cell" id="tLF_CM"><span></span></div>
+          <div class="tire-temp-cell" id="tLF_CR"><span></span></div>
+        </div>
+      </div>
+      <div class="tire" id="qRF">
+        <div class="tire-label"><span>RF</span><span class="tire-lap-badge" id="lapRF"></span></div>
+        <div class="tire-pressure" id="pRF">--<span class="unit">kPa</span></div>
+        <div class="temp-labels"><span>I</span><span>M</span><span>O</span></div>
+        <div class="tire-temps">
+          <div class="tire-temp-cell" id="tRF_CL"><span></span></div>
+          <div class="tire-temp-cell" id="tRF_CM"><span></span></div>
+          <div class="tire-temp-cell" id="tRF_CR"><span></span></div>
+        </div>
+      </div>
+      <div class="tire" id="qLR">
+        <div class="tire-label"><span>LR</span><span class="tire-lap-badge" id="lapLR"></span></div>
+        <div class="tire-pressure" id="pLR">--<span class="unit">kPa</span></div>
+        <div class="temp-labels"><span>O</span><span>M</span><span>I</span></div>
+        <div class="tire-temps">
+          <div class="tire-temp-cell" id="tLR_CL"><span></span></div>
+          <div class="tire-temp-cell" id="tLR_CM"><span></span></div>
+          <div class="tire-temp-cell" id="tLR_CR"><span></span></div>
+        </div>
+      </div>
+      <div class="tire" id="qRR">
+        <div class="tire-label"><span>RR</span><span class="tire-lap-badge" id="lapRR"></span></div>
+        <div class="tire-pressure" id="pRR">--<span class="unit">kPa</span></div>
+        <div class="temp-labels"><span>I</span><span>M</span><span>O</span></div>
+        <div class="tire-temps">
+          <div class="tire-temp-cell" id="tRR_CL"><span></span></div>
+          <div class="tire-temp-cell" id="tRR_CM"><span></span></div>
+          <div class="tire-temp-cell" id="tRR_CR"><span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="tires.js"></script>
+</body>
+</html>

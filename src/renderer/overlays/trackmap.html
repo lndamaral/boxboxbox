@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Map</title>
+  <link rel="stylesheet" href="../styles/tokens.css">
+  <link rel="stylesheet" href="trackmap.css">
+</head>
+<body>
+  <div class="trackmap-card" id="card">
+    <div class="tm-hdr">
+      <span class="tm-hdr-title">TRACK MAP</span>
+      <span class="tm-hdr-meta" id="trackMeta"></span>
+    </div>
+    <div class="tm-svg-wrap">
+      <svg id="mapSvg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet">
+        <rect id="trackPlaceholder" class="track-outline"
+              x="30" y="15" width="260" height="170" rx="65" ry="65" />
+        <path id="trackBuilt" class="track-outline" d="" style="display:none" />
+        <g id="carDots"></g>
+      </svg>
+    </div>
+    <div class="tm-ftr">
+      <span id="posLabel"></span>
+      <span class="tm-pos-leader" id="posValue"></span>
+    </div>
+  </div>
+  <script src="trackmap.js"></script>
+</body>
+</html>

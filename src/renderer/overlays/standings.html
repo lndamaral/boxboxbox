@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Standings</title>
+  <link rel="stylesheet" href="../styles/tokens.css">
+  <link rel="stylesheet" href="standings.css">
+</head>
+<body>
+  <div class="standings-card" id="card">
+    <div class="std-hdr">
+      <div class="std-hdr-left">
+        <div class="std-hdr-line">
+          <span class="std-hdr-title">STANDINGS</span>
+          <span class="std-hdr-track" id="trackName"></span>
+        </div>
+        <div class="std-hdr-session" id="sessionInfo"></div>
+      </div>
+      <div class="std-ir-est" id="irEstimator">
+        <span class="std-ir-value" id="irValue"></span>
+        <span class="std-ir-label">iR EST</span>
+      </div>
+    </div>
+    <div class="standings-columns" id="columnsHeader"></div>
+    <div class="standings-body" id="body"></div>
+  </div>
+  <script src="standings.js"></script>
+</body>
+</html>

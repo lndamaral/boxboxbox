@@ -1,0 +1,83 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: transparent;
+  overflow: hidden;
+  font-family: var(--font-display);
+}
+
+.spotter-card {
+  width: 220px;
+  height: 240px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 8px 32px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.sp-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.sp-hdr-title {
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.sp-hdr-speed {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.sp-canvas {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  padding: 14px;
+}
+
+.sp-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ring {
+  fill: none;
+  stroke-width: 1;
+}
+
+.ring-far {
+  stroke: rgba(255, 255, 255, 0.04);
+}
+
+.ring-mid {
+  stroke: rgba(255, 255, 255, 0.03);
+  stroke-dasharray: 2 4;
+}
+
+.ring-close {
+  stroke: rgba(248, 113, 113, 0.12);
+  stroke-dasharray: 2 3;
+}
+
+/* Edit mode */
+body.edit-mode .spotter-card {
+  -webkit-app-region: drag;
+  outline: 2px dashed var(--accent);
+  outline-offset: 2px;
+}
