@@ -1,6 +1,24 @@
 (function () {
   'use strict';
 
+  const card = document.getElementById('card');
+
+  function autoScale() {
+    card.style.transform = '';
+    card.style.width = '';
+    card.style.height = '';
+    const r = card.getBoundingClientRect();
+    const s = Math.min(window.innerWidth / r.width, window.innerHeight / r.height, 1);
+    if (s < 1) {
+      card.style.transform = `scale(${s})`;
+      card.style.transformOrigin = 'top left';
+      card.style.width = (window.innerWidth / s) + 'px';
+      card.style.height = (window.innerHeight / s) + 'px';
+    }
+  }
+  window.addEventListener('resize', autoScale);
+  autoScale();
+
   const elLevel = document.getElementById('fuelLevel');
   const elAvg = document.getElementById('fuelAvg');
   const elLapsLeft = document.getElementById('fuelLapsLeft');

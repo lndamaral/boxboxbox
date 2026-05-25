@@ -1,12 +1,40 @@
 (function () {
   'use strict';
 
+  const card = document.getElementById('card');
   const body = document.getElementById('body');
   const columnsHeader = document.getElementById('columnsHeader');
   const trackNameEl = document.getElementById('trackName');
   const sessionInfoEl = document.getElementById('sessionInfo');
   const irEstimator = document.getElementById('irEstimator');
   const irValue = document.getElementById('irValue');
+
+  // Auto-scale: card renders at natural size, scaled to fit viewport
+  function autoScale() {
+    card.style.transform = '';
+    card.style.width = '';
+    card.style.height = '';
+
+    const cardRect = card.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const scaleX = vw / cardRect.width;
+    const scaleY = vh / cardRect.height;
+    const scale = Math.min(scaleX, scaleY, 1); // never upscale beyond 1
+
+    if (scale < 1) {
+      card.style.transform = `scale(${scale})`;
+      card.style.width = (vw / scale) + 'px';
+      card.style.height = (vh / scale) + 'px';
+    } else {
+      card.style.width = '100%';
+      card.style.height = '100vh';
+    }
+  }
+
+  window.addEventListener('resize', autoScale);
+  autoScale();
 
   const B = 1600 / Math.LN2;
 

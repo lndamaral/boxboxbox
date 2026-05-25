@@ -1,10 +1,38 @@
 (function () {
   'use strict';
 
+  const card = document.getElementById('card');
   const body = document.getElementById('body');
   const sessionBadge = document.getElementById('sessionBadge');
   const trackNameEl = document.getElementById('trackName');
   const connDot = document.getElementById('connDot');
+
+  // Auto-scale: shrink content to fit if window is smaller than content
+  function autoScale() {
+    card.style.transform = '';
+    card.style.width = '';
+    card.style.height = '';
+
+    const cardRect = card.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    const scaleX = vw / cardRect.width;
+    const scaleY = vh / cardRect.height;
+    const scale = Math.min(scaleX, scaleY, 1);
+
+    if (scale < 1) {
+      card.style.transform = `scale(${scale})`;
+      card.style.width = (vw / scale) + 'px';
+      card.style.height = (vh / scale) + 'px';
+    } else {
+      card.style.width = '100%';
+      card.style.height = '100%';
+    }
+  }
+
+  window.addEventListener('resize', autoScale);
+  autoScale();
 
   const LICENSE_COLORS = {
     P: 'var(--lic-pro)',
