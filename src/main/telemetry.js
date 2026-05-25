@@ -56,14 +56,6 @@ class TelemetryBridge extends EventEmitter {
       if (values && values.SessionNum !== undefined) {
         this._lastSessionNum = values.SessionNum;
       }
-      if (values && !this._diagLoggedTires) {
-        this._diagLoggedTires = true;
-        const tireKeys = Object.keys(values).filter(k => /press|temp|tire|wear/i.test(k)).sort();
-        console.log('[Diag] tire-related telemetry keys:', tireKeys.join(', '));
-        for (const k of tireKeys) {
-          console.log(`[Diag]   ${k} = ${values[k]}`);
-        }
-      }
       const slim = this._slim(values);
       if (slim) {
         slim.drivers = this._drivers;
@@ -384,10 +376,14 @@ class TelemetryBridge extends EventEmitter {
       LapLastLapTime: data.LapLastLapTime,
       SessionTimeRemain: data.SessionTimeRemain,
       Lap: data.Lap,
-      LFpressure: data.LFpressure,
-      RFpressure: data.RFpressure,
-      LRpressure: data.LRpressure,
-      RRpressure: data.RRpressure,
+      // iRacing emits LFcoldPressure as the live tire pressure for
+      // most cars — there is no separate "hot" LFpressure variable.
+      // The name is a misnomer; the value updates as temps rise.
+      // Fallback to LFpressure for mock telemetry compatibility.
+      LFpressure: data.LFcoldPressure != null ? data.LFcoldPressure : data.LFpressure,
+      RFpressure: data.RFcoldPressure != null ? data.RFcoldPressure : data.RFpressure,
+      LRpressure: data.LRcoldPressure != null ? data.LRcoldPressure : data.LRpressure,
+      RRpressure: data.RRcoldPressure != null ? data.RRcoldPressure : data.RRpressure,
       LFtempCL: data.LFtempCL,
       LFtempCM: data.LFtempCM,
       LFtempCR: data.LFtempCR,
@@ -407,19 +403,6 @@ class TelemetryBridge extends EventEmitter {
   _parseSessionInfo(sessionInfo) {
     try {
       const driverInfo = sessionInfo?.DriverInfo;
-      if (driverInfo && driverInfo.Drivers && !this._diagLoggedDrivers) {
-        this._diagLoggedDrivers = true;
-        const playerCarIdx = driverInfo.DriverCarIdx;
-        const player = driverInfo.Drivers.find(d => d.CarIdx === playerCarIdx);
-        if (player) {
-          console.log('[Diag] player driver fields:', Object.keys(player).join(', '));
-          console.log('[Diag] player IRating:', player.IRating, 'CarIdx:', player.CarIdx, 'Name:', player.UserName);
-          const irKeys = Object.keys(player).filter(k => /rating|ir|license/i.test(k));
-          for (const k of irKeys) {
-            console.log(`[Diag]   ${k} = ${JSON.stringify(player[k])}`);
-          }
-        }
-      }
       if (driverInfo && driverInfo.Drivers) {
         // Index drivers by CarIdx so this._drivers[i] matches CarIdx-keyed
         // telemetry arrays (CarIdxLapDistPct, CarIdxPosition, etc.).
