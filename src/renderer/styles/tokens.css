@@ -19,20 +19,20 @@
   --accent-soft:       rgba(0, 229, 255, 0.16);
   --accent-glow:       0 0 16px rgba(0, 229, 255, 0.35);
 
-  /* Semantic */
-  --pos-good:          #4ade80;
-  --pos-bad:           #f87171;
-  --pit-warn:          #fbbf24;
-  --lapped:            #60a5fa;
-  --pos-fastest:       #d946ef;
+  /* Semantic — neon */
+  --pos-good:          #39ff14;
+  --pos-bad:           #ff3131;
+  --pit-warn:          #ffff00;
+  --lapped:            #4deeea;
+  --pos-fastest:       #ff00ff;
 
-  /* License */
-  --lic-pro: #f4a460;
-  --lic-a:   #1e88e5;
-  --lic-b:   #43a047;
-  --lic-c:   #fdd835;
-  --lic-d:   #fb8c00;
-  --lic-r:   #e53935;
+  /* License — neon */
+  --lic-pro: #ff9f1a;
+  --lic-a:   #00bfff;
+  --lic-b:   #39ff14;
+  --lic-c:   #ffff00;
+  --lic-d:   #ff6600;
+  --lic-r:   #ff0000;
 
   /* Spacing */
   --s-1: 2px;
