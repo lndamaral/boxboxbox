@@ -121,6 +121,16 @@
 
     entries.sort((a, b) => b.relDist - a.relDist);
 
+    // Limit to 3 ahead + player + 3 behind
+    const playerIndex = entries.findIndex(e => e.isPlayer);
+    if (playerIndex >= 0 && entries.length > 7) {
+      const start = Math.max(0, playerIndex - 3);
+      const end = Math.min(entries.length, start + 7);
+      const adjustedStart = Math.max(0, end - 7);
+      entries.splice(0, adjustedStart);
+      entries.length = Math.min(entries.length, 7);
+    }
+
     while (body.children.length < entries.length) body.appendChild(buildRow());
     while (body.children.length > entries.length) body.removeChild(body.lastChild);
 

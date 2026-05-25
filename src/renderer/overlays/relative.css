@@ -24,7 +24,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--s-4) var(--s-5);
+  padding: var(--s-2) var(--s-5);
   border-bottom: 1px solid var(--border);
   font-size: 10px;
   letter-spacing: 0.08em;
@@ -80,8 +80,8 @@ html, body {
   display: grid;
   grid-template-columns: 28px 38px 1fr 48px 44px 64px 56px;
   align-items: center;
-  gap: var(--s-3);
-  padding: var(--s-3) var(--s-5);
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-5);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -103,9 +103,9 @@ html, body {
   display: grid;
   grid-template-columns: 28px 38px 1fr 48px 44px 64px 56px;
   align-items: center;
-  gap: var(--s-3);
-  padding: var(--s-3) var(--s-5);
-  min-height: 30px;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-5);
+  min-height: 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   position: relative;
 }
@@ -242,7 +242,7 @@ html, body {
 
 /* Footer */
 .rel-ftr {
-  padding: var(--s-3) var(--s-5);
+  padding: var(--s-2) var(--s-5);
   border-top: 1px solid var(--border);
   font-size: 9px;
   letter-spacing: 0.1em;

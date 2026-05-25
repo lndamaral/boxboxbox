@@ -27,7 +27,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: stretch;
-  padding: 10px 14px;
+  padding: var(--s-3) 14px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -103,8 +103,8 @@ html, body {
 /* Column headers */
 .standings-columns {
   display: grid;
-  gap: var(--s-3);
-  padding: var(--s-3) 14px;
+  gap: var(--s-2);
+  padding: var(--s-1) 14px;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -130,11 +130,11 @@ html, body {
 /* Rows */
 .s-row {
   display: grid;
-  gap: var(--s-3);
-  padding: 7px 14px;
+  gap: var(--s-2);
+  padding: var(--s-2) 14px;
   align-items: center;
   position: relative;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-primary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
@@ -144,7 +144,7 @@ html, body {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
@@ -272,8 +272,8 @@ html, body {
 .class-group-hdr {
   display: flex;
   align-items: center;
-  gap: var(--s-4);
-  padding: 5px 14px;
+  gap: var(--s-3);
+  padding: 3px 14px;
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid var(--border);
   border-top: 1px solid var(--border);
