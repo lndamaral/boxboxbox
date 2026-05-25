@@ -6,15 +6,40 @@
   "scripts": {
     "start": "electron .",
     "dev": "DEBUG=boxboxbox* electron .",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "build:win": "electron-builder --win",
+    "release": "electron-builder --win --publish always"
   },
   "keywords": ["iracing", "overlay", "simracing"],
-  "author": "",
+  "author": "Leo Amaral <lnd.amaral@gmail.com>",
   "license": "MIT",
-  "devDependencies": {
-    "electron": "^33.0.0"
+  "build": {
+    "appId": "app.boxboxbox.overlays",
+    "productName": "BoxBoxBox",
+    "win": {
+      "target": ["nsis"],
+      "icon": null
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "publish": {
+      "provider": "github",
+      "owner": "lndamaral",
+      "repo": "boxboxbox"
+    }
   },
-  "optionalDependencies": {
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {
     "node-irsdk-2023": "^2.1.5"
   }
 }
