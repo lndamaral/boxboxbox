@@ -18,7 +18,7 @@ app.whenReady().then(() => {
   manager.createOverlay('inputs', { width: 360, height: 140, x: 0, y: 726 });
   manager.createOverlay('fuel', { width: 280, height: 180, x: 1190, y: 378 });
   manager.createOverlay('tires', { width: 352, height: 245, x: 1127, y: 551 });
-  manager.createOverlay('trackmap', { width: 360, height: 260, x: 1085, y: 86, hidden: true });
+  manager.createOverlay('trackmap', { width: 360, height: 260, x: 1085, y: 86 });
   manager.createOverlay('standings', { width: 447, height: 430, x: 0, y: 35 });
   manager.createOverlay('spotter', { width: 220, height: 240, x: 632, y: 114 });
 
@@ -40,7 +40,7 @@ app.whenReady().then(() => {
   telemetry.on('sessionInfo', () => {
     // Detect car for calibration
     const drivers = telemetry._drivers;
-    const playerIdx = telemetry._mockState ? telemetry._mockState.playerIdx : 0;
+    const playerIdx = telemetry._mockState ? telemetry._mockState.playerIdx : telemetry._playerCarIdx;
     if (drivers[playerIdx] && drivers[playerIdx].carPath) {
       tireCal.setCarPath(drivers[playerIdx].carPath);
     }

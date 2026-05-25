@@ -12,6 +12,7 @@ class TelemetryBridge extends EventEmitter {
     this._numCarClasses = 1;
     this._lastSessionNum = 0;
     this._trackName = '';
+    this._playerCarIdx = 0;
   }
 
   start() {
@@ -396,15 +397,28 @@ class TelemetryBridge extends EventEmitter {
     try {
       const driverInfo = sessionInfo?.DriverInfo;
       if (driverInfo && driverInfo.Drivers) {
-        this._drivers = driverInfo.Drivers.map((d) => ({
-          name: d.UserName || d.TeamName || '',
-          carNum: String(d.CarNumber || ''),
-          iRating: d.IRating || 0,
-          license: (d.LicString || '').charAt(0) || '',
-          classColor: d.CarClassColor != null ? parseInt(d.CarClassColor, 16) : 0xFFFF00,
-          classId: d.CarClassID != null ? d.CarClassID : 0,
-          carPath: d.CarPath || '',
-        }));
+        // Index drivers by CarIdx so this._drivers[i] matches CarIdx-keyed
+        // telemetry arrays (CarIdxLapDistPct, CarIdxPosition, etc.).
+        // iRacing's DriverInfo.Drivers list can contain a pace car entry and
+        // may not be densely packed, so a plain .map() breaks the indexing.
+        const indexed = [];
+        for (const d of driverInfo.Drivers) {
+          const carIdx = d.CarIdx;
+          if (carIdx == null || carIdx < 0) continue;
+          indexed[carIdx] = {
+            name: d.UserName || d.TeamName || '',
+            carNum: String(d.CarNumber || ''),
+            iRating: d.IRating || 0,
+            license: (d.LicString || '').charAt(0) || '',
+            classColor: d.CarClassColor != null ? parseInt(d.CarClassColor, 16) : 0xFFFF00,
+            classId: d.CarClassID != null ? d.CarClassID : 0,
+            carPath: d.CarPath || '',
+          };
+        }
+        this._drivers = indexed;
+      }
+      if (driverInfo && driverInfo.DriverCarIdx != null) {
+        this._playerCarIdx = driverInfo.DriverCarIdx;
       }
 
       // Extract current session type
