@@ -53,6 +53,14 @@ class TelemetryBridge extends EventEmitter {
       if (values && values.SessionNum !== undefined) {
         this._lastSessionNum = values.SessionNum;
       }
+      if (values && !this._diagLoggedTires) {
+        this._diagLoggedTires = true;
+        const tireKeys = Object.keys(values).filter(k => /press|temp|tire|wear/i.test(k)).sort();
+        console.log('[Diag] tire-related telemetry keys:', tireKeys.join(', '));
+        for (const k of tireKeys) {
+          console.log(`[Diag]   ${k} = ${values[k]}`);
+        }
+      }
       const slim = this._slim(values);
       if (slim) {
         slim.drivers = this._drivers;
@@ -396,6 +404,19 @@ class TelemetryBridge extends EventEmitter {
   _parseSessionInfo(sessionInfo) {
     try {
       const driverInfo = sessionInfo?.DriverInfo;
+      if (driverInfo && driverInfo.Drivers && !this._diagLoggedDrivers) {
+        this._diagLoggedDrivers = true;
+        const playerCarIdx = driverInfo.DriverCarIdx;
+        const player = driverInfo.Drivers.find(d => d.CarIdx === playerCarIdx);
+        if (player) {
+          console.log('[Diag] player driver fields:', Object.keys(player).join(', '));
+          console.log('[Diag] player IRating:', player.IRating, 'CarIdx:', player.CarIdx, 'Name:', player.UserName);
+          const irKeys = Object.keys(player).filter(k => /rating|ir|license/i.test(k));
+          for (const k of irKeys) {
+            console.log(`[Diag]   ${k} = ${JSON.stringify(player[k])}`);
+          }
+        }
+      }
       if (driverInfo && driverInfo.Drivers) {
         // Index drivers by CarIdx so this._drivers[i] matches CarIdx-keyed
         // telemetry arrays (CarIdxLapDistPct, CarIdxPosition, etc.).
