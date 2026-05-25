@@ -41,6 +41,7 @@ class TrackMapManager {
 
     const vx = data.VelocityX;
     const vy = data.VelocityY;
+    const yaw = data.Yaw;
     const onPit = data.CarIdxOnPitRoad ? data.CarIdxOnPitRoad[data.PlayerCarIdx] : false;
 
     // Don't record while in pit
@@ -64,9 +65,10 @@ class TrackMapManager {
       return false;
     }
 
-    // Record sample
-    if (vx != null && vy != null) {
-      this.samples.push({ vx, vy, dt: 1 / 30 });
+    // Record sample (yaw is needed in map-builder to rotate the
+    // body-frame velocities into world frame before integrating)
+    if (vx != null && vy != null && yaw != null) {
+      this.samples.push({ vx, vy, yaw, dt: 1 / 30 });
     }
 
     // Detect lap completion (cross from near 1.0 back to near 0.0)

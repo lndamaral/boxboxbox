@@ -10,19 +10,28 @@ const CLOSE_TOLERANCE = 0.05; // 5% of bounding box for path closure
 
 /**
  * Build an SVG path from velocity/yaw samples.
- * @param {Array<{vx: number, vy: number, dt: number}>} samples
+ *
+ * iRacing emits VelocityX/Y in the car's body frame (vx=lateral,
+ * vy=longitudinal), so each sample must be rotated by yaw into the
+ * world frame before integrating, otherwise the trajectory just
+ * accumulates forward speed in a straight line and never closes.
+ *
+ * @param {Array<{vx: number, vy: number, yaw: number, dt: number}>} samples
  * @returns {{ svgPathD: string, viewBox: string, length: number } | null}
  */
 function buildPath(samples) {
   if (!validatePath(samples)) return null;
 
-  // Integrate velocity to get (X, Y) positions
   const points = [];
   let x = 0, y = 0;
 
   for (const s of samples) {
-    x += s.vx * s.dt;
-    y += s.vy * s.dt;
+    const c = Math.cos(s.yaw);
+    const sn = Math.sin(s.yaw);
+    const wx = s.vx * c - s.vy * sn;
+    const wy = s.vx * sn + s.vy * c;
+    x += wx * s.dt;
+    y += wy * s.dt;
     points.push({ x, y });
   }
 
@@ -82,13 +91,17 @@ function buildPath(samples) {
 function validatePath(samples) {
   if (!samples || samples.length < MIN_SAMPLES) return false;
 
-  // Integrate to find total displacement
+  // Integrate world-frame displacement (rotate body-frame velocity by yaw)
   let x = 0, y = 0;
   let minX = 0, maxX = 0, minY = 0, maxY = 0;
 
   for (const s of samples) {
-    x += s.vx * s.dt;
-    y += s.vy * s.dt;
+    const c = Math.cos(s.yaw);
+    const sn = Math.sin(s.yaw);
+    const wx = s.vx * c - s.vy * sn;
+    const wy = s.vx * sn + s.vy * c;
+    x += wx * s.dt;
+    y += wy * s.dt;
     if (x < minX) minX = x;
     if (x > maxX) maxX = x;
     if (y < minY) minY = y;

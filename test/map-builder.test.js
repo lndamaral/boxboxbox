@@ -3,16 +3,17 @@ const assert = require('node:assert/strict');
 const { buildPath, validatePath, MIN_SAMPLES } = require('../src/main/calculators/map-builder');
 
 function generateOvalSamples(count) {
-  // Simulate an oval circuit (elliptical path)
+  // Simulate an oval circuit (elliptical path).
+  // buildPath now rotates body-frame velocity by yaw, so yaw=0 keeps
+  // these samples interpreted as already-world-frame.
   const samples = [];
   const dt = 1 / 30;
   const laps = 1;
   for (let i = 0; i < count; i++) {
     const t = (i / count) * Math.PI * 2 * laps;
-    // Velocity is derivative of position on ellipse
     const vx = -Math.sin(t) * 100; // 100m semi-major
     const vy = Math.cos(t) * 60;   // 60m semi-minor
-    samples.push({ vx, vy, dt });
+    samples.push({ vx, vy, yaw: 0, dt });
   }
   return samples;
 }
@@ -36,7 +37,7 @@ test('buildPath returns null for non-closing path', () => {
   // Straight line — doesn't close
   const samples = [];
   for (let i = 0; i < MIN_SAMPLES; i++) {
-    samples.push({ vx: 50, vy: 0, dt: 1 / 30 });
+    samples.push({ vx: 50, vy: 0, yaw: 0, dt: 1 / 30 });
   }
   assert.equal(buildPath(samples), null);
 });
@@ -44,7 +45,7 @@ test('buildPath returns null for non-closing path', () => {
 test('validatePath rejects short samples', () => {
   assert.equal(validatePath(null), false);
   assert.equal(validatePath([]), false);
-  assert.equal(validatePath(new Array(100).fill({ vx: 0, vy: 0, dt: 0.033 })), false);
+  assert.equal(validatePath(new Array(100).fill({ vx: 0, vy: 0, yaw: 0, dt: 0.033 })), false);
 });
 
 test('validatePath accepts valid oval', () => {
@@ -55,7 +56,21 @@ test('validatePath accepts valid oval', () => {
 test('validatePath rejects non-closing path', () => {
   const samples = [];
   for (let i = 0; i < MIN_SAMPLES; i++) {
-    samples.push({ vx: 50, vy: 0, dt: 1 / 30 });
+    samples.push({ vx: 50, vy: 0, yaw: 0, dt: 1 / 30 });
   }
   assert.equal(validatePath(samples), false);
+});
+
+test('buildPath closes a circle from body-frame velocity + yaw', () => {
+  // Body-frame matches reality: vy=forward, vx=0, yaw rotates each tick.
+  const samples = [];
+  const count = 2000;
+  const speed = 50;
+  const dt = 1 / 30;
+  for (let i = 0; i < count; i++) {
+    const yaw = (i / count) * Math.PI * 2; // full rotation over one lap
+    samples.push({ vx: 0, vy: speed, yaw, dt });
+  }
+  const result = buildPath(samples);
+  assert.ok(result !== null, 'Should build from body-frame samples');
 });
