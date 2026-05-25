@@ -4,11 +4,12 @@
   "description": "Modern overlays for iRacing",
   "main": "src/main/main.js",
   "scripts": {
-    "start": "electron .",
-    "dev": "DEBUG=boxboxbox* electron .",
+    "start": "node scripts/start.js",
+    "dev": "DEBUG=boxboxbox* node scripts/start.js",
     "test": "node --test test/pick-delta-mode.test.js test/fuel.test.js test/irating.test.js test/tire-calibration.test.js test/map-builder.test.js test/spotter.test.js",
     "build:win": "electron-builder --win",
-    "release": "electron-builder --win --publish always"
+    "release": "electron-builder --win --publish always",
+    "fix-electron": "node fix-electron.js"
   },
   "keywords": ["iracing", "overlay", "simracing"],
   "author": "Leo Amaral <lnd.amaral@gmail.com>",
@@ -36,10 +37,11 @@
     }
   },
   "devDependencies": {
-    "electron": "^33.0.0",
+    "@electron/rebuild": "^4.0.4",
+    "electron": "^33.4.11",
     "electron-builder": "^25.1.8"
   },
   "dependencies": {
-    "node-irsdk-2023": "^2.1.5"
+    "node-irsdk-2023": "^2.1.8"
   }
 }
