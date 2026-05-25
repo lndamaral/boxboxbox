@@ -11,6 +11,36 @@ npm start
 
 On Mac/Linux (or Windows without iRacing running), the app starts in **mock mode** with synthetic data — no iRacing needed for development.
 
+### Windows — full iRacing telemetry
+
+Real telemetry depends on `node-irsdk-2023`, which compiles a native addon and is listed as an `optionalDependency`. If the build fails, npm hides the error and the app silently falls back to mock mode. To get real data:
+
+1. **Install MSVC Build Tools** (one-time, required by `node-gyp`):
+   ```powershell
+   winget install Microsoft.VisualStudio.2022.BuildTools --override "--wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+   ```
+2. **Reinstall the native addon** with foreground logs so failures aren't hidden:
+   ```bash
+   npm install node-irsdk-2023 --foreground-scripts
+   ```
+3. **Don't upgrade Electron past 33.x.** `node-irsdk-2023@2.1.8` pulls in `nan@2.27`, which uses old `v8::External` signatures that no longer compile against the V8 in Electron 34+. The pinned range in `package.json` (`^33.x`) is intentional.
+
+### Windows — Electron binary fails to extract
+
+The Electron postinstall sometimes downloads the binary but fails silently during zip extraction, leaving `node_modules/electron/path.txt` missing. Symptom:
+
+```
+Error: ENOENT: no such file or directory, open 'node_modules\electron\path.txt'
+```
+
+Fix:
+
+```bash
+npm run fix-electron
+```
+
+This re-downloads the matching Electron build, extracts it via PowerShell, and writes `path.txt`. Run after any `npm install` that breaks the binary.
+
 ## Shortcuts
 
 | Key | Action |
