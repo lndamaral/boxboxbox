@@ -48,10 +48,11 @@ class TelemetryBridge extends EventEmitter {
     });
 
     instance.on('Telemetry', (evt) => {
-      if (evt.data && evt.data.SessionNum !== undefined) {
-        this._lastSessionNum = evt.data.SessionNum;
+      const values = evt.values;
+      if (values && values.SessionNum !== undefined) {
+        this._lastSessionNum = values.SessionNum;
       }
-      const slim = this._slim(evt.data);
+      const slim = this._slim(values);
       if (slim) {
         slim.drivers = this._drivers;
         this.emit('telemetry', slim);
@@ -393,7 +394,7 @@ class TelemetryBridge extends EventEmitter {
 
   _parseSessionInfo(sessionInfo) {
     try {
-      const driverInfo = sessionInfo?.data?.DriverInfo;
+      const driverInfo = sessionInfo?.DriverInfo;
       if (driverInfo && driverInfo.Drivers) {
         this._drivers = driverInfo.Drivers.map((d) => ({
           name: d.UserName || d.TeamName || '',
@@ -401,24 +402,26 @@ class TelemetryBridge extends EventEmitter {
           iRating: d.IRating || 0,
           license: (d.LicString || '').charAt(0) || '',
           classColor: d.CarClassColor != null ? parseInt(d.CarClassColor, 16) : 0xFFFF00,
+          classId: d.CarClassID != null ? d.CarClassID : 0,
+          carPath: d.CarPath || '',
         }));
       }
 
       // Extract current session type
-      const sessions = sessionInfo?.data?.SessionInfo?.Sessions;
+      const sessions = sessionInfo?.SessionInfo?.Sessions;
       const sessionNum = this._lastSessionNum;
       if (sessions && sessionNum != null && sessions[sessionNum]) {
         this._sessionType = sessions[sessionNum].SessionType || '';
       }
 
       // Detect multiclass and track name
-      const weekendInfo = sessionInfo?.data?.WeekendInfo;
+      const weekendInfo = sessionInfo?.WeekendInfo;
       if (weekendInfo) {
         if (weekendInfo.NumCarClasses != null) this._numCarClasses = weekendInfo.NumCarClasses;
         if (weekendInfo.TrackDisplayName) this._trackName = weekendInfo.TrackDisplayName;
       }
-    } catch {
-      // SessionInfo parsing may fail on partial data
+    } catch (err) {
+      console.warn('[Telemetry] SessionInfo parse failed:', err.message);
     }
   }
 }
