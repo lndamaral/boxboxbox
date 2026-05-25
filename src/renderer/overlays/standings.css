@@ -117,15 +117,11 @@ html, body {
 .col-header.left { text-align: left; }
 .col-header.right { text-align: right; }
 
-/* Body scroll */
+/* Body */
 .standings-body {
-  overflow-y: auto;
+  overflow: hidden;
   flex: 1;
 }
-
-.standings-body::-webkit-scrollbar { width: 3px; }
-.standings-body::-webkit-scrollbar-track { background: transparent; }
-.standings-body::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
 
 /* Rows */
 .s-row {
