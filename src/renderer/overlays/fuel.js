@@ -27,6 +27,9 @@
   const connDot = document.getElementById('connDot');
 
   const MAX_LAP_HISTORY = 3;
+  // iRacing returns 604800s (one week) as a sentinel for unlimited /
+  // lap-based sessions. Treat anything past this threshold as no limit.
+  const SESSION_TIME_MAX = 7200;
   let fuelPerLapHistory = [];
   let prevLap = -1;
   let prevFuelLevel = -1;
@@ -66,7 +69,7 @@
     const lapsLeft = avg > 0 ? fuelLevel / avg : Infinity;
     const avgLapTime = lastLapTime > 0 ? lastLapTime : 90;
     let sessionLaps = Infinity;
-    if (sessionTimeRemain > 0 && avgLapTime > 0) {
+    if (sessionTimeRemain > 0 && sessionTimeRemain < SESSION_TIME_MAX && avgLapTime > 0) {
       sessionLaps = sessionTimeRemain / avgLapTime;
     }
 
