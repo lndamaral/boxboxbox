@@ -7,8 +7,10 @@ const STDERR_FILTERS = [
 ];
 
 const child = spawn(electronPath, ['.', ...process.argv.slice(2)], {
-  stdio: ['inherit', 'inherit', 'pipe'],
+  stdio: ['inherit', 'pipe', 'pipe'],
 });
+
+child.stdout.pipe(process.stdout);
 
 readline.createInterface({ input: child.stderr }).on('line', (line) => {
   if (!STDERR_FILTERS.some((re) => re.test(line))) {
