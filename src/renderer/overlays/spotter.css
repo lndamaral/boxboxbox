@@ -21,6 +21,10 @@ html, body {
   overflow: hidden;
 }
 
+/* Hide card body when no adversary is within range. Edit mode forces
+   visibility so the window stays draggable. */
+body:not(.edit-mode) .spotter-card.empty { display: none; }
+
 .sp-hdr {
   display: flex;
   justify-content: space-between;
@@ -34,7 +38,7 @@ html, body {
 .sp-hdr-title {
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: var(--accent);
 }
 
 .sp-hdr-speed {

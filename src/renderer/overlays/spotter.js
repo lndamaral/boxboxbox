@@ -2,6 +2,7 @@
   'use strict';
 
   const svgNS = 'http://www.w3.org/2000/svg';
+  const card = document.getElementById('card');
   const adversariesGroup = document.getElementById('adversaries');
   const speedEl = document.getElementById('speed');
 
@@ -56,7 +57,10 @@
   }
 
   function render(data) {
-    if (!data || data.PlayerCarIdx === undefined) return;
+    if (!data || data.PlayerCarIdx === undefined) {
+      card.classList.add('empty');
+      return;
+    }
 
     // Speed display
     const speed = data.Speed != null ? data.Speed : 0;
@@ -70,7 +74,10 @@
     const drivers = data.drivers || [];
     const playerDist = lapDistPct[playerIdx];
 
-    if (playerDist == null) return;
+    if (playerDist == null) {
+      card.classList.add('empty');
+      return;
+    }
 
     // Find nearby cars
     const nearby = [];
@@ -137,6 +144,9 @@
     for (let i = positioned.length; i < rectPool.length; i++) {
       rectPool[i].style.display = 'none';
     }
+
+    // Hide whole card when no adversary is within range
+    card.classList.toggle('empty', positioned.length === 0);
   }
 
   window.overlayAPI.onEditMode((enabled) => {
