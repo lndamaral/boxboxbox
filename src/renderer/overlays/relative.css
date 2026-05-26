@@ -40,7 +40,7 @@ html, body {
 .rel-hdr-title {
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: var(--accent);
 }
 
 .rel-hdr-sep { color: var(--text-muted); }

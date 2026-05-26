@@ -32,7 +32,7 @@ html, body {
 .inp-hdr-title {
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: var(--accent);
 }
 
 .inp-hdr-meta {

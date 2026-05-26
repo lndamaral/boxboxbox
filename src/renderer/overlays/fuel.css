@@ -32,7 +32,7 @@ html, body {
 .fuel-hdr-title {
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: var(--accent);
 }
 
 .rel-conn {

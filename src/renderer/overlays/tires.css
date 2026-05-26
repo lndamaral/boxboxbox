@@ -32,7 +32,7 @@ html, body {
 .tires-hdr-title {
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: var(--accent);
 }
 
 .tires-hdr-meta {
@@ -140,6 +140,39 @@ html, body {
 .tt-hot { background: #fb8c00; color: #422006; }
 .tt-crit { background: #e53935; }
 .tt-uncal { background: rgba(255, 255, 255, 0.08); color: var(--text-muted); }
+
+/* Weather strip */
+.tires-weather {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--s-3) var(--s-5);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 10px;
+  color: var(--text-secondary);
+  gap: var(--s-3);
+}
+.tw-item {
+  display: flex;
+  gap: var(--s-2);
+  align-items: baseline;
+  white-space: nowrap;
+}
+.tw-label {
+  color: var(--text-muted);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+#wSkies {
+  color: var(--text-secondary);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}
+#wSkies.rain { color: var(--lapped); }
 
 /* Edit mode */
 body.edit-mode .tires-card {

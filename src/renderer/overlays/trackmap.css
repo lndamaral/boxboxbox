@@ -32,7 +32,7 @@ html, body {
 .tm-hdr-title {
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: var(--accent);
 }
 
 .tm-hdr-meta {

@@ -49,7 +49,7 @@ html, body {
 .std-hdr-title {
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: var(--accent);
 }
 
 .std-hdr-track {
@@ -114,8 +114,9 @@ html, body {
 }
 
 .col-header { text-align: center; }
-.col-header.left { text-align: left; }
-.col-header.right { text-align: right; }
+.col-left, .s-row > .col-left { text-align: left; }
+.col-center, .s-row > .col-center { text-align: center; }
+.col-right, .s-row > .col-right { text-align: right; }
 
 /* Body */
 .standings-body {
