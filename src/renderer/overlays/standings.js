@@ -74,43 +74,54 @@
     return '+' + abs.toFixed(0);
   }
 
+  // Interval between two entries (current vs the entry immediately ahead
+  // in the same standings group). Returns '—' for the leader, empty for
+  // entries without a valid best lap.
+  function formatInterval(e, prev) {
+    if (!prev) return '—';
+    if (!e.bestLap || e.bestLap <= 0 || !prev.bestLap || prev.bestLap <= 0) return '';
+    return '+' + (e.bestLap - prev.bestLap).toFixed(3);
+  }
+
   function getColumns(mode, multiclass) {
-    const cls = multiclass ? [{ key: 'cls', label: 'CLS', width: '30px' }] : [];
+    const cls = multiclass ? [{ key: 'cls', label: 'CLS', width: '30px', align: 'center' }] : [];
     if (mode === 'race') {
       return [
-        { key: 'pos', label: 'P', width: '22px' },
+        { key: 'pos', label: 'P', width: '22px', align: 'center' },
         ...cls,
-        { key: 'car', label: 'CAR', width: '32px' },
-        { key: 'name', label: 'DRIVER', width: '1fr' },
-        { key: 'ir', label: 'iR', width: '36px' },
-        { key: 'gapLeader', label: 'GAP', width: '52px' },
-        { key: 'gapAhead', label: 'INT', width: '48px' },
-        { key: 'last', label: 'LAST', width: '56px' },
-        { key: 'best', label: 'BEST', width: '56px' },
+        { key: 'car', label: 'CAR', width: '32px', align: 'center' },
+        { key: 'name', label: 'DRIVER', width: '1fr', align: 'left' },
+        { key: 'ir', label: 'iR', width: '36px', align: 'center' },
+        { key: 'gapLeader', label: 'GAP', width: '50px', align: 'right' },
+        { key: 'gapAhead', label: 'INT', width: '46px', align: 'right' },
+        { key: 'last', label: 'LAST', width: '54px', align: 'right' },
+        { key: 'best', label: 'BEST', width: '54px', align: 'right' },
       ];
     } else if (mode === 'qualy') {
       return [
-        { key: 'pos', label: 'P', width: '22px' },
+        { key: 'pos', label: 'P', width: '22px', align: 'center' },
         ...cls,
-        { key: 'car', label: 'CAR', width: '32px' },
-        { key: 'name', label: 'DRIVER', width: '1fr' },
-        { key: 'ir', label: 'iR', width: '36px' },
-        { key: 'best', label: 'BEST', width: '58px' },
-        { key: 'deltaP1', label: '\u0394P1', width: '52px' },
-        { key: 'last', label: 'LAST', width: '56px' },
-        { key: 'status', label: 'ST', width: '44px' },
+        { key: 'car', label: 'CAR', width: '32px', align: 'center' },
+        { key: 'name', label: 'DRIVER', width: '1fr', align: 'left' },
+        { key: 'ir', label: 'iR', width: '34px', align: 'center' },
+        { key: 'best', label: 'BEST', width: '56px', align: 'right' },
+        { key: 'deltaP1', label: '\u0394P1', width: '46px', align: 'right' },
+        { key: 'gapAhead', label: 'INT', width: '46px', align: 'right' },
+        { key: 'last', label: 'LAST', width: '54px', align: 'right' },
+        { key: 'status', label: 'ST', width: '38px', align: 'center' },
       ];
     } else {
       return [
-        { key: 'pos', label: 'P', width: '22px' },
+        { key: 'pos', label: 'P', width: '22px', align: 'center' },
         ...cls,
-        { key: 'car', label: 'CAR', width: '32px' },
-        { key: 'name', label: 'DRIVER', width: '1fr' },
-        { key: 'ir', label: 'iR', width: '36px' },
-        { key: 'best', label: 'BEST', width: '58px' },
-        { key: 'deltaP1', label: '\u0394P1', width: '52px' },
-        { key: 'last', label: 'LAST', width: '56px' },
-        { key: 'laps', label: 'L', width: '28px' },
+        { key: 'car', label: 'CAR', width: '32px', align: 'center' },
+        { key: 'name', label: 'DRIVER', width: '1fr', align: 'left' },
+        { key: 'ir', label: 'iR', width: '34px', align: 'center' },
+        { key: 'best', label: 'BEST', width: '56px', align: 'right' },
+        { key: 'deltaP1', label: '\u0394P1', width: '46px', align: 'right' },
+        { key: 'gapAhead', label: 'INT', width: '46px', align: 'right' },
+        { key: 'last', label: 'LAST', width: '54px', align: 'right' },
+        { key: 'laps', label: 'L', width: '24px', align: 'center' },
       ];
     }
   }
@@ -119,7 +130,9 @@
     const cols = getColumns(mode, multiclass);
     const gridTemplate = cols.map(c => c.width).join(' ');
     columnsHeader.style.gridTemplateColumns = gridTemplate;
-    columnsHeader.innerHTML = cols.map(c => `<span class="col-header">${c.label}</span>`).join('');
+    columnsHeader.innerHTML = cols.map(c =>
+      `<span class="col-header col-${c.align || 'center'}">${c.label}</span>`
+    ).join('');
     return { cols, gridTemplate };
   }
 
@@ -253,14 +266,14 @@
       for (const group of groups) {
         body.appendChild(buildClassHeader(group));
         for (const e of group.entries) {
-          const row = buildRow(cols.length);
+          const row = buildRow(cols);
           row.style.gridTemplateColumns = gridTemplate;
           populateRaceRow(row, e, entries, data, playerIdx, classTotals, fastestMap, multiclass, cols);
           body.appendChild(row);
         }
       }
     } else {
-      ensureRows(entries.length, gridTemplate);
+      ensureRows(entries.length, cols, gridTemplate);
       for (let i = 0; i < entries.length; i++) {
         populateRaceRow(body.children[i], entries[i], entries, data, playerIdx, classTotals, fastestMap, multiclass, cols);
       }
@@ -351,7 +364,7 @@
     const fastestMap = findFastestBest(entries, multiclass);
     const p1Best = entries.length > 0 && entries[0].bestLap > 0 ? entries[0].bestLap : 0;
 
-    const populateRow = (row, e, pos) => {
+    const populateRow = (row, e, pos, prev) => {
       const isPlayer = e.idx === playerIdx;
       row.className = 's-row' + (isPlayer ? ' player' : '');
       if (e.classColor != null) row.style.setProperty('--class-color', '#' + (e.classColor & 0xFFFFFF).toString(16).padStart(6, '0'));
@@ -373,6 +386,9 @@
         deltaEl.textContent = '+' + (e.bestLap - p1Best).toFixed(3);
         deltaEl.className = 's-delta bad';
       }
+      const intEl = row.children[colIdx++];
+      intEl.textContent = formatInterval(e, prev);
+      intEl.className = 's-delta neutral';
       row.children[colIdx].textContent = formatTime(e.lastLap);
       row.children[colIdx].className = 's-time';
       colIdx++;
@@ -388,16 +404,16 @@
       for (const group of groups) {
         body.appendChild(buildClassHeader(group));
         group.entries.forEach((e, i) => {
-          const row = buildRow(cols.length);
+          const row = buildRow(cols);
           row.style.gridTemplateColumns = gridTemplate;
-          populateRow(row, e, entries.indexOf(e) + 1);
+          populateRow(row, e, entries.indexOf(e) + 1, i > 0 ? group.entries[i - 1] : null);
           body.appendChild(row);
         });
       }
     } else {
-      ensureRows(entries.length, gridTemplate);
+      ensureRows(entries.length, cols, gridTemplate);
       for (let i = 0; i < entries.length; i++) {
-        populateRow(body.children[i], entries[i], i + 1);
+        populateRow(body.children[i], entries[i], i + 1, i > 0 ? entries[i - 1] : null);
       }
     }
   }
@@ -426,7 +442,7 @@
     const fastestMap = findFastestBest(entries, multiclass);
     const p1Best = entries.length > 0 && entries[0].bestLap > 0 ? entries[0].bestLap : 0;
 
-    const populateRow = (row, e, pos) => {
+    const populateRow = (row, e, pos, prev) => {
       const isPlayer = e.idx === playerIdx;
       row.className = 's-row' + (isPlayer ? ' player' : '');
       if (e.classColor != null) row.style.setProperty('--class-color', '#' + (e.classColor & 0xFFFFFF).toString(16).padStart(6, '0'));
@@ -448,6 +464,9 @@
         deltaEl.textContent = '+' + (e.bestLap - p1Best).toFixed(3);
         deltaEl.className = 's-delta bad';
       }
+      const intEl = row.children[colIdx++];
+      intEl.textContent = formatInterval(e, prev);
+      intEl.className = 's-delta neutral';
       row.children[colIdx].textContent = formatTime(e.lastLap);
       row.children[colIdx].className = 's-time';
       colIdx++;
@@ -460,35 +479,36 @@
       for (const group of groups) {
         body.appendChild(buildClassHeader(group));
         group.entries.forEach((e, i) => {
-          const row = buildRow(cols.length);
+          const row = buildRow(cols);
           row.style.gridTemplateColumns = gridTemplate;
-          populateRow(row, e, entries.indexOf(e) + 1);
+          populateRow(row, e, entries.indexOf(e) + 1, i > 0 ? group.entries[i - 1] : null);
           body.appendChild(row);
         });
       }
     } else {
-      ensureRows(entries.length, gridTemplate);
+      ensureRows(entries.length, cols, gridTemplate);
       for (let i = 0; i < entries.length; i++) {
-        populateRow(body.children[i], entries[i], i + 1);
+        populateRow(body.children[i], entries[i], i + 1, i > 0 ? entries[i - 1] : null);
       }
     }
   }
 
   // --- DOM helpers ---
 
-  function buildRow(numCols) {
+  function buildRow(cols) {
     const row = document.createElement('div');
     row.className = 's-row';
-    for (let i = 0; i < numCols; i++) {
-      row.appendChild(document.createElement('div'));
+    for (const col of cols) {
+      const cell = document.createElement('div');
+      cell.className = 'col-' + (col.align || 'center');
+      row.appendChild(cell);
     }
     return row;
   }
 
-  function ensureRows(count, gridTemplate) {
-    const numCols = gridTemplate.split(' ').length;
+  function ensureRows(count, cols, gridTemplate) {
     while (body.children.length < count) {
-      const row = buildRow(numCols);
+      const row = buildRow(cols);
       row.style.gridTemplateColumns = gridTemplate;
       body.appendChild(row);
     }
