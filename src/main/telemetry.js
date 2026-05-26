@@ -13,6 +13,7 @@ class TelemetryBridge extends EventEmitter {
     this._lastSessionNum = 0;
     this._trackName = '';
     this._playerCarIdx = 0;
+    this._sessionLaps = 0;
   }
 
   start() {
@@ -362,6 +363,7 @@ class TelemetryBridge extends EventEmitter {
       SessionNum: data.SessionNum,
       SessionFlags: data.SessionFlags,
       SessionType: this._sessionType,
+      SessionLaps: this._sessionLaps,
       NumCarClasses: this._numCarClasses,
       TrackName: this._trackName,
       Throttle: data.Throttle,
@@ -439,11 +441,15 @@ class TelemetryBridge extends EventEmitter {
         this._playerCarIdx = driverInfo.DriverCarIdx;
       }
 
-      // Extract current session type
+      // Extract current session type + lap count target
       const sessions = sessionInfo?.SessionInfo?.Sessions;
       const sessionNum = this._lastSessionNum;
       if (sessions && sessionNum != null && sessions[sessionNum]) {
-        this._sessionType = sessions[sessionNum].SessionType || '';
+        const s = sessions[sessionNum];
+        this._sessionType = s.SessionType || '';
+        // SessionLaps is "unlimited" for timed races
+        const lapsRaw = parseInt(s.SessionLaps, 10);
+        this._sessionLaps = Number.isFinite(lapsRaw) ? lapsRaw : 0;
       }
 
       // Detect multiclass and track name

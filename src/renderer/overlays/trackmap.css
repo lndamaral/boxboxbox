@@ -32,7 +32,9 @@ html, body {
 .tm-hdr-title {
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--title);
+  text-shadow: var(--title-glow);
+  letter-spacing: 0.1em;
 }
 
 .tm-hdr-meta {

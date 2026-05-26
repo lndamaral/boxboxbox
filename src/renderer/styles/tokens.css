@@ -19,6 +19,10 @@
   --accent-soft:       rgba(0, 229, 255, 0.16);
   --accent-glow:       0 0 16px rgba(0, 229, 255, 0.35);
 
+  /* Overlay title — neon yellow */
+  --title:             #fff200;
+  --title-glow:        0 0 10px rgba(255, 242, 0, 0.6);
+
   /* Semantic — neon */
   --pos-good:          #39ff14;
   --pos-bad:           #ff3131;

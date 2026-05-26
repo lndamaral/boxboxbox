@@ -30,7 +30,7 @@
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
 
-  const HISTORY_LEN = 150;
+  const HISTORY_LEN = 300; // 10s at 30Hz
   const throttleHistory = new Float32Array(HISTORY_LEN);
   const brakeHistory = new Float32Array(HISTORY_LEN);
   const clutchHistory = new Float32Array(HISTORY_LEN);

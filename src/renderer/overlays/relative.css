@@ -40,7 +40,9 @@ html, body {
 .rel-hdr-title {
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--title);
+  text-shadow: var(--title-glow);
+  letter-spacing: 0.1em;
 }
 
 .rel-hdr-sep { color: var(--text-muted); }

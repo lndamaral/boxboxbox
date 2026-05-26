@@ -5,7 +5,8 @@
  * Persisted per car in userData/tire-calibration/{carPath}.json.
  */
 
-const MIN_SAMPLES = 18000; // ~10 min at 30Hz
+const MIN_SAMPLES = 5400; // ~3 min at 30Hz — percentiles stabilise well before then,
+                          // and the running mergeCalibrations keeps refining over time
 
 /**
  * Compute percentile thresholds from samples.

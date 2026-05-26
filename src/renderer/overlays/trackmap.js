@@ -67,10 +67,25 @@
     const playerIdx = data.PlayerCarIdx;
     const drivers = data.drivers || [];
     const lapDistPct = data.CarIdxLapDistPct || [];
+    const lapsArr = data.CarIdxLap || [];
     const positions = data.CarIdxPosition || [];
     const onPit = data.CarIdxOnPitRoad || [];
 
     if (drivers.length === 0) return;
+
+    // Derive positions from lap+lapDistPct when iRacing doesn't provide
+    // them (e.g., test drive sessions report CarIdxPosition = 0 for
+    // everyone). Used as a fallback per-driver below.
+    const progressed = [];
+    for (let i = 0; i < drivers.length; i++) {
+      if (!drivers[i] || !drivers[i].name) continue;
+      const pct = lapDistPct[i];
+      if (pct == null || pct < 0) continue;
+      progressed.push({ idx: i, progress: (lapsArr[i] || 0) + pct });
+    }
+    progressed.sort((a, b) => b.progress - a.progress);
+    const derivedPos = new Map();
+    progressed.forEach((d, i) => derivedPos.set(d.idx, i + 1));
 
     // Check if built map is available
     const mapState = data.trackMapState;
@@ -103,7 +118,8 @@
       const point = activeTrack.getPointAtLength(pct * trackLength);
       const isPlayer = i === playerIdx;
       const inPit = onPit[i] || false;
-      const pos = positions[i] || 0;
+      const rawPos = positions[i] || 0;
+      const pos = rawPos > 0 ? rawPos : (derivedPos.get(i) || 0);
 
       if (isPlayer) playerPos = pos;
 
@@ -118,7 +134,7 @@
       text.setAttribute('x', point.x);
       text.setAttribute('y', point.y);
 
-      text.textContent = pos;
+      text.textContent = pos > 0 ? pos : '';
 
       if (isPlayer) {
         circle.setAttribute('fill', '#00e5ff');
@@ -149,8 +165,9 @@
     const playerGroup = dotPool.get(playerIdx);
     if (playerGroup) carDotsGroup.appendChild(playerGroup);
 
+    const driverCount = progressed.length || drivers.length;
     posLabel.textContent = 'YOUR POS';
-    posValue.textContent = 'P' + playerPos + ' / ' + drivers.length;
+    posValue.textContent = 'P' + (playerPos || '—') + ' / ' + driverCount;
   }
 
   window.overlayAPI.onEditMode((enabled) => {

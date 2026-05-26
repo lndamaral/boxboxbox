@@ -291,7 +291,9 @@
     row.children[colIdx++].textContent = e.position;
     if (multiclass) row.children[colIdx++].textContent = e.classPosition + '/' + classTotals[e.classId];
     row.children[colIdx++].textContent = e.carNum;
-    row.children[colIdx++].textContent = e.name;
+    const sessionLaps = data.SessionLaps || 0;
+    const finished = sessionLaps > 0 && e.lap > sessionLaps;
+    row.children[colIdx++].textContent = e.name + (finished ? ' 🏁' : '');
     row.children[colIdx++].textContent = (e.iRating / 1000).toFixed(1) + 'k';
 
     const leaderLap = allEntries.length > 0 ? allEntries[0].lap : 0;

@@ -41,19 +41,34 @@
     return 0;
   }
 
-  // Pool of adversary rect elements
-  const rectPool = [];
-  let activeCount = 0;
+  // Pool of adversary car-shaped polygons (hexagonal silhouette: narrow at
+  // front/rear, wider in the middle — reads as a car from above).
+  const carPool = [];
 
-  function getOrCreateRect(idx) {
-    if (idx < rectPool.length) return rectPool[idx];
-    const rect = document.createElementNS(svgNS, 'rect');
-    rect.setAttribute('rx', '3');
-    rect.setAttribute('stroke', '#0a0a0d');
-    rect.setAttribute('stroke-width', '1');
-    adversariesGroup.appendChild(rect);
-    rectPool.push(rect);
-    return rect;
+  function getOrCreateCar(idx) {
+    if (idx < carPool.length) return carPool[idx];
+    const poly = document.createElementNS(svgNS, 'polygon');
+    poly.setAttribute('stroke', '#0a0a0d');
+    poly.setAttribute('stroke-width', '1');
+    poly.setAttribute('stroke-linejoin', 'round');
+    adversariesGroup.appendChild(poly);
+    carPool.push(poly);
+    return poly;
+  }
+
+  function carShapePoints(x, y, w, h) {
+    const taper = w * 0.18;
+    const shoulder = h * 0.16;
+    return [
+      `${x + taper},${y}`,
+      `${x + w - taper},${y}`,
+      `${x + w},${y + shoulder}`,
+      `${x + w},${y + h - shoulder}`,
+      `${x + w - taper},${y + h}`,
+      `${x + taper},${y + h}`,
+      `${x},${y + h - shoulder}`,
+      `${x},${y + shoulder}`,
+    ].join(' ');
   }
 
   function render(data) {
@@ -120,10 +135,10 @@
       return { ...entry, side };
     });
 
-    // Render adversary rects
+    // Render adversary cars
     for (let i = 0; i < positioned.length; i++) {
       const adv = positioned[i];
-      const rect = getOrCreateRect(i);
+      const poly = getOrCreateCar(i);
       const color = proximityColor(adv.distance);
       const size = carSize(adv.distance);
       const angle = slotAngle(adv.side, adv.isAhead);
@@ -132,17 +147,14 @@
       const x = CENTER + Math.sin(angle) * r - size.w / 2;
       const y = CENTER - Math.cos(angle) * r - size.h / 2;
 
-      rect.setAttribute('x', x);
-      rect.setAttribute('y', y);
-      rect.setAttribute('width', size.w);
-      rect.setAttribute('height', size.h);
-      rect.setAttribute('fill', color);
-      rect.style.display = '';
+      poly.setAttribute('points', carShapePoints(x, y, size.w, size.h));
+      poly.setAttribute('fill', color);
+      poly.style.display = '';
     }
 
-    // Hide unused rects
-    for (let i = positioned.length; i < rectPool.length; i++) {
-      rectPool[i].style.display = 'none';
+    // Hide unused cars
+    for (let i = positioned.length; i < carPool.length; i++) {
+      carPool[i].style.display = 'none';
     }
 
     // Hide whole card when no adversary is within range
