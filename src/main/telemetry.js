@@ -57,6 +57,15 @@ class TelemetryBridge extends EventEmitter {
       if (values && values.SessionNum !== undefined) {
         this._lastSessionNum = values.SessionNum;
       }
+      // Log tire carcass temps once per lap so the user can confirm
+      // iRacing is actually changing them across laps. Remove after the
+      // tire-temp-not-updating investigation is concluded.
+      if (values && values.Lap != null && values.Lap !== this._lastLoggedLap) {
+        if (this._lastLoggedLap != null) {
+          console.log(`[Tires] lap ${values.Lap}: LF=${values.LFtempCL?.toFixed?.(2)} RF=${values.RFtempCL?.toFixed?.(2)} LR=${values.LRtempCL?.toFixed?.(2)} RR=${values.RRtempCL?.toFixed?.(2)}`);
+        }
+        this._lastLoggedLap = values.Lap;
+      }
       const slim = this._slim(values);
       if (slim) {
         slim.drivers = this._drivers;

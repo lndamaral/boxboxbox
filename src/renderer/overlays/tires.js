@@ -95,14 +95,15 @@
       }
     }
 
-    // Temperatures — snapshot per lap
+    // Temperatures — live carcass temps (slow update). Show 1 decimal
+    // so small changes are visible; integer rounding made them look frozen.
     for (const c of CORNERS) {
       for (const z of ZONES) {
         const key = c + 'temp' + z;
         const val = data[key];
         if (val != null) {
           const el = tempEls[c][z];
-          el.textContent = Math.round(val);
+          el.textContent = val.toFixed(1);
 
           if (!isCalibrated) {
             el.className = 'tire-temp-cell tt-uncal';
