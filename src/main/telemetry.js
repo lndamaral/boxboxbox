@@ -323,6 +323,11 @@ class TelemetryBridge extends EventEmitter {
       RRtempCM: s.tireTemp.RR.CM,
       RRtempCR: s.tireTemp.RR.CR,
       TireTempLap: s.tireTempLap,
+      AirTemp: 23.5,
+      TrackTemp: 32.1,
+      RelativeHumidity: 0.45,
+      Skies: 1,
+      Precipitation: 0,
       NumCarClasses: 3,
       drivers: cars.map(c => ({
         name: c.name,
@@ -397,6 +402,12 @@ class TelemetryBridge extends EventEmitter {
       RRtempCM: data.RRtempCM,
       RRtempCR: data.RRtempCR,
       TireTempLap: data.TireTempLap,
+      // Weather / environment
+      AirTemp: data.AirTemp,
+      TrackTemp: data.TrackTemp,
+      RelativeHumidity: data.RelativeHumidity,
+      Skies: data.Skies,
+      Precipitation: data.Precipitation,
     };
   }
 

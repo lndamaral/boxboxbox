@@ -20,8 +20,14 @@
   autoScale();
 
   const headerMeta = document.getElementById('headerMeta');
+  const wAir = document.getElementById('wAir');
+  const wTrack = document.getElementById('wTrack');
+  const wHum = document.getElementById('wHum');
+  const wSkies = document.getElementById('wSkies');
   const CORNERS = ['LF', 'RF', 'LR', 'RR'];
   const ZONES = ['CL', 'CM', 'CR'];
+
+  const SKY_LABELS = ['CLEAR', 'PT CLDY', 'CLOUDY', 'OVERCAST'];
 
   const pressureEls = {};
   const tempEls = {};
@@ -112,6 +118,19 @@
     const tempLap = data.TireTempLap;
     for (const c of CORNERS) {
       lapBadgeEls[c].textContent = (tempLap != null && tempLap > 0) ? 'L' + tempLap : '';
+    }
+
+    // Weather strip
+    if (data.AirTemp != null) wAir.textContent = data.AirTemp.toFixed(1) + '°';
+    if (data.TrackTemp != null) wTrack.textContent = data.TrackTemp.toFixed(1) + '°';
+    if (data.RelativeHumidity != null) wHum.textContent = Math.round(data.RelativeHumidity * 100) + '%';
+    const raining = data.Precipitation > 0;
+    if (raining) {
+      wSkies.textContent = 'RAIN';
+      wSkies.classList.add('rain');
+    } else if (data.Skies != null) {
+      wSkies.textContent = SKY_LABELS[data.Skies] || '--';
+      wSkies.classList.remove('rain');
     }
   }
 
